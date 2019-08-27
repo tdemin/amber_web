@@ -1,0 +1,28 @@
+{
+    "extends": "react-app",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "rules": {
+        "semi": "error",
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "quotes": ["warn", "double"],
+        "max-len": [
+            "error",
+            {
+                "code": 80,
+                "tabWidth": 4
+            }
+        ]
+    }
+}

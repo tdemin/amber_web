@@ -1,0 +1,11 @@
+doc
+public
+.vscode
+src/logo.svg
+.drone.yml
+.editorconfig
+.gitignore
+**/Dockerfile
+docker-compose.yml
+**/README*.md
+package.json
