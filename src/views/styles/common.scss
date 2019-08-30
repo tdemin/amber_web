@@ -1,0 +1,10 @@
+$spacing: 8px;
+
+$elementWidth: 120px;
+
+div.root {
+    max-width: 720px;
+    margin: auto;
+    margin-top: $spacing * 4;
+    margin-bottom: $spacing * 4;
+}

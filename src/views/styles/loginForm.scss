@@ -1,0 +1,13 @@
+@import "./common.scss";
+
+form.loginForm {
+    display: flex;
+    flex-direction: column;
+    input {
+        max-width: $elementWidth * 2;
+        margin-bottom: $spacing;
+        &.submitBtn {
+            max-width: $elementWidth;
+        }
+    }
+}
