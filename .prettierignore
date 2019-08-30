@@ -1,7 +1,6 @@
 doc
 public
 .vscode
-src/logo.svg
 .drone.yml
 .editorconfig
 .gitignore
