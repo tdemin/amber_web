@@ -4,11 +4,10 @@ import { connect } from "react-redux";
 
 import { logout } from "../actions/auth";
 import { AnyAction } from "../typings/actions";
-import { Store } from "../typings/store";
 
 import strings from "./assets/locales";
 
-const mapStateToProps = (state: Store) => ({});
+import "./styles/mainView.scss";
 
 interface Props {
     dispatch: ThunkDispatch<any, any, AnyAction>;
@@ -30,4 +29,4 @@ class MainView extends React.PureComponent<Props> {
     };
 }
 
-export default connect(mapStateToProps)(MainView);
+export default connect()(MainView);
