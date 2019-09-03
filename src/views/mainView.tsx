@@ -3,6 +3,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 
 import { logout } from "../actions/auth";
+import { fetchTasks } from "../actions/tasks";
 import { AnyAction } from "../typings/actions";
 
 import strings from "./assets/locales";
@@ -14,6 +15,7 @@ interface Props {
 }
 class MainView extends React.PureComponent<Props> {
     logout = () => this.props.dispatch(logout());
+    componentDidMount = () => this.props.dispatch(fetchTasks());
     render = () => {
         return (
             <div className="root">

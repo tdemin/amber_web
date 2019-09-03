@@ -10,21 +10,21 @@ import MainView from "./views/mainView";
 import { setToken, resetToken } from "./actions/auth";
 
 const mapStateToProps = (state: Store) => ({
-    token: state.auth.token as string,
-    username: state.auth.username as string,
+    token: state.auth.token,
+    username: state.auth.username,
 });
 
 interface Props {
-    token: string;
-    username: string;
+    token?: string;
+    username?: string;
 }
-class App extends React.PureComponent<Props, Props> {
+class App extends React.Component<Props, Props> {
     state = {
         token: this.props.token,
         username: this.props.username,
     } as Props;
     updateToken = () => {
-        if (this.props.token.length !== 0) setToken(this.props.token);
+        if (this.props.token) setToken(this.props.token as string);
         else resetToken();
     };
     componentDidMount = () => this.updateToken();
@@ -41,7 +41,8 @@ class App extends React.PureComponent<Props, Props> {
         }
     };
     render = () => {
-        const loggedIn = this.state.token.length !== 0;
+        const token = this.state.token as string;
+        const loggedIn = token.length !== 0;
         return (
             <div className="app">
                 <Router>

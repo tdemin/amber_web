@@ -1,3 +1,5 @@
+import { Task } from "./tasks";
+
 export interface Action {
     type: string;
     data?: any;
@@ -13,4 +15,8 @@ export interface AuthAction extends Action {
     authFailed?: boolean;
 }
 
-export type AnyAction = Action & ErrorAction & AuthAction;
+export interface TaskAction extends Action {
+    data?: Task | Task[];
+}
+
+export type AnyAction = Action & ErrorAction & AuthAction & TaskAction;
