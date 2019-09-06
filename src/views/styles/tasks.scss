@@ -1,0 +1,8 @@
+@import "common.scss";
+
+div.taskSubtree {
+    margin-left: $spacing * 2;
+    div.taskLine {
+        line-height: inherit;
+    }
+}
