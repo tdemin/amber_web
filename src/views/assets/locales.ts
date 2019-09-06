@@ -6,7 +6,7 @@ export default new LocalizedStrings({
         login_userNameTp: "User name...",
         login_passwordTp: "Password...",
         login_wrongPassTp: "Login failed. Check username and password.",
-        main_loggedInMsg: "You're now logged in.",
+        main_loggedInMsg: "Logged in as",
         main_logoutBtn: "Logout",
     },
 });

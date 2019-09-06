@@ -1,1 +1,18 @@
 @import "./common.scss";
+
+div.header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    flex-grow: 1;
+    justify-content: space-between;
+    * {
+        margin-left: $spacing;
+    }
+    span.userName {
+        font-weight: bold;
+    }
+    input.logoutBtn {
+        align-self: flex-end;
+    }
+}

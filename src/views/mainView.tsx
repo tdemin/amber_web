@@ -33,7 +33,8 @@ class MainView extends React.PureComponent<Props> {
             <div className="root">
                 <div className="header">
                     <span className="loggedInMsg">
-                        {strings.main_loggedInMsg} — {username}
+                        {strings.main_loggedInMsg}
+                        <span className="userName">{username}</span>
                     </span>
                     <input
                         type="button"
