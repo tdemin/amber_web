@@ -9,17 +9,62 @@ import { taskFromRecord, taskToRecord } from "../helpers/tasks";
 
 /**
  * Redux action creator. Fetches the task list from the server and
- * deserializes task data from JSON. Sends an action that instructs the
- * store to merge the list received from the server with the current
- * data. Does nothing on fail.
+ * deserializes task data from JSON. Checks the local task list passed as the
+ * parameter for items that are yet to be synced; if such items are found, it
+ * pushes them one-by-one to the server. It also checks the list for the items
+ * to be removed and sends a DELETE request for them as well. It compares
+ * lastmods for every task; if last mod of the server is earlier, then a PATCH
+ * request is issued; if client has an earlier mod time, than the server task
+ * version is stored instead. If there are local items that do not have a pair
+ * in the remote store and don't have `ToSync` set to `true`, they are
+ * discarded. Loads the just built task list into the store.
+ * @param localTasks The local task list
  */
-export const fetchTasks = () =>
+export const refetchTasks = (localTasks: Task[]) =>
     function(dispatch: Dispatch) {
         req.get("/task").then(
             (res: AxiosResponse) => {
-                const tasks = res.data["tasks"].map(
+                const remoteTasks = res.data["tasks"].map(
                     (x: TaskRecord): Task => taskFromRecord(x)
                 ) as Task[];
+                const tasks: Task[] = [];
+                // first passthrough
+                remoteTasks.forEach((remote) => {
+                    const local = localTasks.find(
+                        (val) => val.ID === remote.ID
+                    );
+                    if (local) {
+                        // matching local task found, comparing modtimes
+                        // we'd rather prefer the local record over a remote one
+                        // on matching modtimes
+                        if (local.LastMod >= remote.LastMod) tasks.push(local);
+                        if (local.LastMod < remote.LastMod) tasks.push(remote);
+                    } else {
+                        // matching local task not found, adding a new task to
+                        // the store
+                        tasks.push(remote);
+                    }
+                });
+                // second passthrough
+                localTasks.forEach((local) => {
+                    const remote = remoteTasks.find(
+                        (val) => val.ID === local.ID
+                    );
+                    if (remote) {
+                        if (local.LastMod >= remote.LastMod) tasks.push(local);
+                        if (local.LastMod < remote.LastMod) tasks.push(remote);
+                    } else {
+                        if (local.ToSync) {
+                            createTask(local);
+                            // not pushing the task so we don't cause collisions
+                        }
+                        if (local.ToRemove) {
+                            deleteTask(local);
+                            // not pushing the task as well
+                        }
+                    }
+                });
+                // push the results to the store
                 dispatch({
                     type: Actions.TasksFetch,
                     data: tasks,
@@ -36,7 +81,6 @@ export const fetchTasks = () =>
 /**
  * Redux action creator. Sends a task creation request to the server,
  * fetches the ID it receives, and updates the task with that ID.
- * TODO: on fail?
  */
 export const createTask = (task: Task) =>
     function(dispatch: Dispatch) {
@@ -62,7 +106,7 @@ export const createTask = (task: Task) =>
 
 /**
  * Redux action creator. Sends a PATCH request to the server with the
- * new task details. TODO: on fail?
+ * new task details.
  */
 export const updateTask = (task: Task) =>
     function(dispatch: Dispatch) {
@@ -83,8 +127,7 @@ export const updateTask = (task: Task) =>
     };
 
 /**
- * Redux action creator. Sends a DELETE request to the server. TODO:
- * on fail?
+ * Redux action creator. Sends a DELETE request to the server.
  */
 export const deleteTask = (task: Task) =>
     function(dispatch: Dispatch) {

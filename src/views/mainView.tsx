@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import TaskList from "./components/taskList";
 
 import { logout } from "../actions/auth";
-import { fetchTasks } from "../actions/tasks";
+import { refetchTasks } from "../actions/tasks";
 import { AnyAction } from "../typings/actions";
 import { Task } from "../typings/tasks";
 import { Store } from "../typings/store";
@@ -26,7 +26,8 @@ interface Props {
 }
 class MainView extends React.PureComponent<Props> {
     logout = () => this.props.dispatch(logout());
-    componentDidMount = () => this.props.dispatch(fetchTasks());
+    componentDidMount = () =>
+        this.props.dispatch(refetchTasks(this.props.tasks));
     render = () => {
         const { tasks, username } = this.props;
         return (
