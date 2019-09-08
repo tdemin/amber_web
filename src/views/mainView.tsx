@@ -24,12 +24,25 @@ interface Props {
     tasks: Task[];
     username?: string;
 }
-class MainView extends React.PureComponent<Props> {
+interface State {
+    tasks: Task[];
+}
+class MainView extends React.Component<Props, State> {
+    state = {
+        tasks: this.props.tasks,
+    };
     logout = () => this.props.dispatch(logout());
     componentDidMount = () =>
         this.props.dispatch(refetchTasks(this.props.tasks));
+    componentDidUpdate = (prevProps: Props) => {
+        if (prevProps.tasks !== this.props.tasks) {
+            this.setState({
+                tasks: this.props.tasks,
+            });
+        }
+    };
     render = () => {
-        const { tasks, username } = this.props;
+        const { username } = this.props;
         return (
             <div className="root">
                 <div className="header">
@@ -45,7 +58,7 @@ class MainView extends React.PureComponent<Props> {
                     />
                 </div>
                 <div className="main">
-                    <TaskList tasks={tasks}></TaskList>
+                    <TaskList tasks={this.state.tasks}></TaskList>
                 </div>
             </div>
         );

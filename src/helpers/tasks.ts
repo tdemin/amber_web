@@ -21,7 +21,7 @@ export const taskFromRecord = (task: TaskRecord): Task => {
  */
 export const taskToRecord = (task: Task): TaskRecord => {
     const record = {
-        parent_id: task.ID,
+        parent_id: task.PID,
         text: task.Text,
         status: task.Completed ? 1 : 0,
     } as TaskRecord;

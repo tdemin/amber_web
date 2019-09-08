@@ -35,10 +35,10 @@ export const refetchTasks = (localTasks: Task[]) =>
                     );
                     if (local) {
                         // matching local task found, comparing modtimes
-                        // we'd rather prefer the local record over a remote one
+                        // we'd rather prefer the remote record over a local one
                         // on matching modtimes
-                        if (local.LastMod >= remote.LastMod) tasks.push(local);
-                        if (local.LastMod < remote.LastMod) tasks.push(remote);
+                        if (local.LastMod > remote.LastMod) tasks.push(local);
+                        if (local.LastMod <= remote.LastMod) tasks.push(remote);
                     } else {
                         // matching local task not found, adding a new task to
                         // the store
