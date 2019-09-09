@@ -124,6 +124,8 @@ class EditorView extends React.Component<Props, State> {
                             type="button"
                             value={strings.btns_deleteTask}
                             onClick={this.delete}
+                            // we can't delete a task we haven't created yet
+                            disabled={this.state.newTask}
                         />
                     </div>
                 </div>

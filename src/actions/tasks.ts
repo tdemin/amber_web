@@ -37,7 +37,10 @@ export const refetchTasks = (localTasks: Task[]) =>
                         // matching local task found, comparing modtimes
                         // we'd rather prefer the remote record over a local one
                         // on matching modtimes
-                        if (local.LastMod > remote.LastMod) tasks.push(local);
+                        if (local.LastMod > remote.LastMod) {
+                            tasks.push(local);
+                            req.patch(`/task/${local.ID}`, taskToRecord(local));
+                        }
                         if (local.LastMod <= remote.LastMod) tasks.push(remote);
                     } else {
                         // matching local task not found, adding a new task to
@@ -53,17 +56,22 @@ export const refetchTasks = (localTasks: Task[]) =>
                             (val) => val.ID === local.ID
                         );
                         if (remote) {
-                            if (local.LastMod >= remote.LastMod)
+                            if (local.LastMod >= remote.LastMod) {
                                 tasks.push(local);
+                                req.patch(
+                                    `/task/${local.ID}`,
+                                    taskToRecord(local)
+                                );
+                            }
                             if (local.LastMod < remote.LastMod)
                                 tasks.push(remote);
                         } else {
                             if (local.ToSync) {
-                                createTask(local);
+                                req.post("/task", taskToRecord(local));
                                 // not pushing the task so we don't cause collisions
                             }
                             if (local.ToRemove) {
-                                deleteTask(local);
+                                req.delete(`/task/${local.ID}`);
                                 // not pushing the task as well
                             }
                         }
