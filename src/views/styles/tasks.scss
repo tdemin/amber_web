@@ -17,6 +17,12 @@ div.taskList {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+            div.taskTextPart {
+                flex-grow: 4;
+                a {
+                    display: block;
+                }
+            }
         }
     }
 }

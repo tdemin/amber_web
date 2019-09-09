@@ -6,6 +6,7 @@ import { Store } from "./typings/store";
 
 import LoginForm from "./views/loginForm";
 import MainView from "./views/mainView";
+import EditorView from "./views/editorView";
 
 import { setToken, resetToken } from "./actions/auth";
 
@@ -54,6 +55,11 @@ class App extends React.Component<Props, Props> {
                     {loggedIn && (
                         <Switch>
                             <Route path="/" exact component={MainView} />
+                            <Route
+                                path="/task/:id"
+                                exact
+                                component={EditorView}
+                            />
                         </Switch>
                     )}
                 </Router>

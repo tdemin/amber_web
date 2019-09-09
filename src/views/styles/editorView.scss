@@ -1,0 +1,7 @@
+@import "common.scss";
+
+div.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

@@ -32,8 +32,8 @@ class MainView extends React.Component<Props, State> {
         tasks: this.props.tasks,
     };
     logout = () => this.props.dispatch(logout());
-    componentDidMount = () =>
-        this.props.dispatch(refetchTasks(this.props.tasks));
+    refetch = () => this.props.dispatch(refetchTasks(this.props.tasks));
+    componentDidMount = () => this.refetch();
     componentDidUpdate = (prevProps: Props) => {
         if (prevProps.tasks !== this.props.tasks) {
             this.setState({
@@ -46,16 +46,26 @@ class MainView extends React.Component<Props, State> {
         return (
             <div className="root">
                 <div className="header">
-                    <span className="loggedInMsg">
-                        {strings.main_loggedInMsg}
-                        <span className="userName">{username}</span>
-                    </span>
-                    <input
-                        type="button"
-                        className="logoutBtn"
-                        onClick={this.logout}
-                        value={strings.main_logoutBtn}
-                    />
+                    <div className="headerText">
+                        <span className="loggedInMsg">
+                            {strings.main_loggedInMsg}
+                            <span className="userName">{username}</span>
+                        </span>
+                    </div>
+                    <div className="headerButtons">
+                        <input
+                            type="button"
+                            className="refetchBtn"
+                            onClick={this.refetch}
+                            value={strings.btns_refetch}
+                        />
+                        <input
+                            type="button"
+                            className="logoutBtn"
+                            onClick={this.logout}
+                            value={strings.main_logoutBtn}
+                        />
+                    </div>
                 </div>
                 <div className="main">
                     <TaskList tasks={this.state.tasks}></TaskList>

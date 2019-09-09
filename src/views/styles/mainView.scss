@@ -3,8 +3,6 @@
 div.header {
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
-    flex-grow: 1;
     justify-content: space-between;
     * {
         margin-left: $spacing;
@@ -12,7 +10,7 @@ div.header {
     span.userName {
         font-weight: bold;
     }
-    input.logoutBtn {
+    div.headerButtons {
         align-self: flex-end;
     }
 }

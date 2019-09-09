@@ -2,6 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 
+import Link from "../components/link";
+
 import { TaskAction } from "../../typings/actions";
 import { Task } from "../../typings/tasks";
 import { Store } from "../../typings/store";
@@ -54,9 +56,11 @@ class TaskLine extends React.Component<Props, State> {
         return (
             <div className={classNames.join(" ")}>
                 <div className="taskTextPart">
-                    <span className="taskID">#{ID}</span>
-                    {" - "}
-                    <span className="taskText">{Text}</span>
+                    <Link to={`/task/${ID}`}>
+                        <span className="taskID">#{ID}</span>
+                        {" - "}
+                        <span className="taskText">{Text}</span>
+                    </Link>
                 </div>
                 <div className="taskButtons">
                     <input
