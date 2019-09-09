@@ -3,6 +3,8 @@ import { ThunkDispatch } from "redux-thunk";
 import { match as Match, RouteComponentProps } from "react-router";
 import { connect } from "react-redux";
 
+import TaskSelect from "./components/taskSelect";
+
 import { deleteTask, updateTask, createTask } from "../actions/tasks";
 
 import { TaskAction } from "../typings/actions";
@@ -30,7 +32,9 @@ interface State {
 }
 class EditorView extends React.Component<Props, State> {
     state = {
-        task: {} as Task,
+        task: {
+            Completed: false,
+        } as Task,
     };
     componentDidMount = () => {
         const id = parseInt(this.props.match.params.id);
@@ -45,7 +49,28 @@ class EditorView extends React.Component<Props, State> {
         this.props.dispatch(deleteTask(this.state.task));
         this.props.history.goBack();
     };
+    updateText = (event: React.FormEvent<HTMLInputElement>) => {
+        const { task } = this.state;
+        task.Text = event.currentTarget.value;
+        this.setState(() => ({ task: task }));
+    };
+    updateStatus = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { task } = this.state;
+        task.Completed = event.currentTarget.checked;
+        this.setState(() => ({ task: task }));
+    };
+    updateParent = (event: React.FormEvent<HTMLSelectElement>) => {
+        const newPID = parseInt(event.currentTarget.value);
+        const { task } = this.state;
+        task.PID = newPID;
+        this.setState(() => ({ task: task }));
+    };
+    saveChanges = () => {
+        this.props.dispatch(updateTask(this.state.task));
+        this.props.history.goBack();
+    };
     render = () => {
+        const task: Task = this.state.task;
         return (
             <div className="root">
                 <div className="header">
@@ -59,13 +84,52 @@ class EditorView extends React.Component<Props, State> {
                     <div className="headerRight">
                         <input
                             type="button"
+                            value={strings.btns_updateTask}
+                            onClick={this.saveChanges}
+                        />
+                        <input
+                            type="button"
                             value={strings.btns_deleteTask}
                             onClick={this.delete}
                         />
                     </div>
                 </div>
                 <div className="main">
-                    <span>{(this.state.task as Task).ID}</span>
+                    <span className="mainSubheading">
+                        #{task.ID} - {task.Text}
+                    </span>
+                    <div className="editor">
+                        <div className="row">
+                            <span className="label">
+                                {strings.editor_statusTp}
+                            </span>
+                            <input
+                                type="checkbox"
+                                checked={task.Completed}
+                                onChange={this.updateStatus}
+                            />
+                        </div>
+                        <div className="row">
+                            <span className="label">
+                                {strings.editor_textTp}
+                            </span>
+                            <input
+                                type="text"
+                                onChange={this.updateText}
+                                value={task.Text}
+                            />
+                        </div>
+                        <div className="row">
+                            <span className="label">
+                                {strings.editor_parentTp}
+                            </span>
+                            <TaskSelect
+                                current={task}
+                                initialValue={task.PID}
+                                onChange={this.updateParent}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         );

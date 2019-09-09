@@ -9,4 +9,21 @@ div.header {
 div.main {
     margin: $spacing;
     margin-top: $spacing * 4;
+    .mainSubheading {
+        font-weight: bolder;
+    }
+    div.editor {
+        margin: $spacing;
+        display: flex;
+        flex-direction: column;
+        .row {
+            display: flex;
+            flex-direction: row;
+            margin: $spacing/2 0;
+            .label {
+                display: block;
+                min-width: $spacing * 8;
+            }
+        }
+    }
 }

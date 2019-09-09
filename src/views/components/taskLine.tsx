@@ -44,7 +44,7 @@ class TaskLine extends React.Component<Props, State> {
     };
     toggleTask = (): void => {
         const task: Task = this.state.task;
-        task.setCompleted(!task.Completed);
+        task.Completed = !task.Completed;
         // wait, we are modifying an object that is supposed to be immutable in
         // the state?
         this.props.dispatch(updateTask(task));

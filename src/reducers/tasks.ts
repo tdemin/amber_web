@@ -47,7 +47,7 @@ export const taskReducer = (
                 (task) => task.ID === (action.data as Task).ID
             );
             state.tasks[index] = action.data as Task;
-            state.tasks[index].updateLastMod();
+            state.tasks[index].LastMod = Date.now();
             return { ...state, lastMod: Date.now() };
         }
         case Actions.TaskUpdateError: {
@@ -56,7 +56,7 @@ export const taskReducer = (
             );
             state.tasks[index] = action.data as Task;
             state.tasks[index].ToSync = true;
-            state.tasks[index].updateLastMod();
+            state.tasks[index].LastMod = Date.now();
             return { ...state, lastMod: Date.now() };
         }
         default:
