@@ -32,18 +32,4 @@ export class Task {
         this.ToSync = false;
         this.ToRemove = false;
     }
-    updateLastMod = () => (this.LastMod = Date.now());
-    setID = (ID: number) => (this.ID = ID);
-    setPID = (PID: number) => {
-        this.PID = PID;
-        this.updateLastMod();
-    };
-    setText = (text: string) => {
-        this.Text = text;
-        this.updateLastMod();
-    };
-    setCompleted = (status: boolean) => {
-        this.Completed = status;
-        this.updateLastMod();
-    };
 }

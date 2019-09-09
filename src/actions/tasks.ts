@@ -92,7 +92,7 @@ export const createTask = (task: Task) =>
         req.post("/task", taskToRecord(task)).then(
             (res: AxiosResponse) => {
                 const id: number = res.data["id"];
-                task.setID(id);
+                task.ID = id;
                 dispatch({
                     type: Actions.TaskCreate,
                     data: task,
