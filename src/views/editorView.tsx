@@ -29,25 +29,50 @@ interface Props extends RouteComponentProps {
 }
 interface State {
     task?: Task;
+    newTask: boolean;
 }
 class EditorView extends React.Component<Props, State> {
     state = {
         task: {
             Completed: false,
+            Text: "",
+            ID: 0,
+            PID: 0,
         } as Task,
+        newTask: false,
     };
     componentDidMount = () => {
-        const id = parseInt(this.props.match.params.id);
-        const task = this.props.tasks.find((task) => task.ID === id);
-        // TODO: sanity checks for both expressions, ideally a check whether
-        // `params.id` is `new` and creation of a new task if so
-        this.setState(() => ({
-            task: task,
-        }));
+        // editing or creating a new task?
+        if (this.props.match.params.id !== "new") {
+            const id = parseInt(this.props.match.params.id);
+            const task = this.props.tasks.find((task) => task.ID === id);
+            this.setState(() => ({
+                task: task,
+            }));
+        } else {
+            // create a new task
+            let maxID = 0;
+            this.props.tasks.forEach(
+                (task) => task.ID > maxID && (maxID = task.ID)
+            );
+            const newID = maxID + 1;
+            const newTask = {
+                ID: newID,
+                Text: "",
+                Completed: false,
+                PID: 0,
+            } as Task;
+            this.setState({
+                task: newTask,
+                newTask: true,
+            });
+        }
     };
     delete = () => {
         this.props.dispatch(deleteTask(this.state.task));
-        this.props.history.goBack();
+        setTimeout(() => {
+            this.props.history.goBack();
+        }, 200);
     };
     updateText = (event: React.FormEvent<HTMLInputElement>) => {
         const { task } = this.state;
@@ -66,8 +91,16 @@ class EditorView extends React.Component<Props, State> {
         this.setState(() => ({ task: task }));
     };
     saveChanges = () => {
-        this.props.dispatch(updateTask(this.state.task));
-        this.props.history.goBack();
+        if (this.state.newTask) {
+            this.props.dispatch(createTask(this.state.task));
+        } else {
+            this.props.dispatch(updateTask(this.state.task));
+        }
+        // delay the reload so fetching tasks doesn't proceed before we have
+        // pushed stuff to the server
+        setTimeout(() => {
+            this.props.history.goBack();
+        }, 200);
     };
     render = () => {
         const task: Task = this.state.task;

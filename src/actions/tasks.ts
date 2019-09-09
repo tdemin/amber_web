@@ -97,8 +97,6 @@ export const createTask = (task: Task) =>
                     type: Actions.TaskCreate,
                     data: task,
                 } as TaskAction);
-                // TODO: isn't the reducer supposed to do nothing, as we
-                // pass the reference to the original object?
             },
             (err: AxiosError) => {
                 dispatch({

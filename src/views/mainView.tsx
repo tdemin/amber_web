@@ -3,6 +3,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 
 import TaskList from "./components/taskList";
+import Link from "./components/link";
 
 import { logout } from "../actions/auth";
 import { refetchTasks } from "../actions/tasks";
@@ -53,6 +54,13 @@ class MainView extends React.Component<Props, State> {
                         </span>
                     </div>
                     <div className="headerButtons">
+                        <Link to="/task/new">
+                            <input
+                                type="button"
+                                className="addBtn"
+                                value={strings.btns_addTask}
+                            />
+                        </Link>
                         <input
                             type="button"
                             className="refetchBtn"
