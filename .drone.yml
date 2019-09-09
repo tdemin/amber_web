@@ -1,0 +1,39 @@
+kind: pipeline
+name: Build & lint
+
+steps:
+- name: lint & test
+  image: node:10-alpine
+  environment:
+    CI: true
+  commands:
+  - node -v
+  - yarn install
+  - yarn run eslint src
+  when:
+    branch:
+      exclude:
+      - master
+- name: deploy to registry
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: username
+    password:
+      from_secret: password
+    repo: registry.git.tdem.in/amber_web
+    registry: registry.git.tdem.in
+    dockerfile: Dockerfile
+  when:
+    branch:
+      exclude:
+      - develop
+      - backend
+      - feature/*
+
+trigger:
+  event:
+  - push
+  - tag
+  - promote
+  - rollback
