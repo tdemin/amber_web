@@ -47,20 +47,24 @@ export const refetchTasks = (localTasks: Task[]) =>
                 });
                 // second passthrough
                 localTasks.forEach((local) => {
-                    const remote = remoteTasks.find(
-                        (val) => val.ID === local.ID
-                    );
-                    if (remote) {
-                        if (local.LastMod >= remote.LastMod) tasks.push(local);
-                        if (local.LastMod < remote.LastMod) tasks.push(remote);
-                    } else {
-                        if (local.ToSync) {
-                            createTask(local);
-                            // not pushing the task so we don't cause collisions
-                        }
-                        if (local.ToRemove) {
-                            deleteTask(local);
-                            // not pushing the task as well
+                    if (!tasks.find((task) => task.ID === local.ID)) {
+                        const remote = remoteTasks.find(
+                            (val) => val.ID === local.ID
+                        );
+                        if (remote) {
+                            if (local.LastMod >= remote.LastMod)
+                                tasks.push(local);
+                            if (local.LastMod < remote.LastMod)
+                                tasks.push(remote);
+                        } else {
+                            if (local.ToSync) {
+                                createTask(local);
+                                // not pushing the task so we don't cause collisions
+                            }
+                            if (local.ToRemove) {
+                                deleteTask(local);
+                                // not pushing the task as well
+                            }
                         }
                     }
                 });
