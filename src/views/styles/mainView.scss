@@ -4,13 +4,29 @@ div.header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    * {
-        margin-left: $spacing;
+    input[type="button"] {
+        margin: 0 $spacing;
     }
     span.userName {
         font-weight: bold;
     }
     div.headerButtons {
         align-self: flex-end;
+    }
+}
+
+@media (max-width: 600px) {
+    span.loggedInMsg {
+        display: none;
+    }
+    div.header {
+        justify-content: center !important;
+        div.headerText {
+            display: none;
+        }
+        div.headerButtons {
+            display: flex;
+            justify-content: space-evenly;
+        }
     }
 }

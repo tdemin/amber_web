@@ -135,9 +135,9 @@ class EditorView extends React.Component<Props, State> {
                     </span>
                     <div className="editor">
                         <div className="row">
-                            <span className="label">
+                            <label className="label">
                                 {strings.editor_statusTp}
-                            </span>
+                            </label>
                             <input
                                 type="checkbox"
                                 checked={task.Completed}
@@ -145,9 +145,9 @@ class EditorView extends React.Component<Props, State> {
                             />
                         </div>
                         <div className="row">
-                            <span className="label">
+                            <label className="label">
                                 {strings.editor_textTp}
-                            </span>
+                            </label>
                             <input
                                 type="text"
                                 onChange={this.updateText}
@@ -155,9 +155,9 @@ class EditorView extends React.Component<Props, State> {
                             />
                         </div>
                         <div className="row">
-                            <span className="label">
+                            <label className="label">
                                 {strings.editor_parentTp}
-                            </span>
+                            </label>
                             <TaskSelect
                                 current={task}
                                 initialValue={task.PID}

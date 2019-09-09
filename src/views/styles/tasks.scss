@@ -26,3 +26,11 @@ div.taskList {
         }
     }
 }
+
+@media (max-width: 600px) {
+    div.taskList {
+        div.taskSubtree {
+            margin-left: $spacing * 1.5 !important;
+        }
+    }
+}

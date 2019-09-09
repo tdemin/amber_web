@@ -8,18 +8,20 @@ div.header {
 
 div.main {
     margin: $spacing;
+    margin-left: $spacing * 2;
     margin-top: $spacing * 4;
     .mainSubheading {
         font-weight: bolder;
     }
     div.editor {
-        margin: $spacing;
+        margin-top: $spacing * 2;
         display: flex;
         flex-direction: column;
         .row {
             display: flex;
             flex-direction: row;
-            margin: $spacing/2 0;
+            align-content: center;
+            margin: $spacing 0;
             .label {
                 display: block;
                 min-width: $spacing * 8;
