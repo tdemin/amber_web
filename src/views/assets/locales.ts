@@ -10,6 +10,8 @@ export default new LocalizedStrings({
         main_logoutBtn: "Logout",
         btns_goBack: "Back",
         btns_refetch: "Update",
+        btns_deleteTask: "Delete",
+        btns_updateTask: "Save",
         task_toggleBtnCompleted: "Completed",
         task_toggleBtnPending: "Pending",
     },

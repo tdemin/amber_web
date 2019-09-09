@@ -5,3 +5,8 @@ div.header {
     flex-direction: row;
     justify-content: space-between;
 }
+
+div.main {
+    margin: $spacing;
+    margin-top: $spacing * 4;
+}

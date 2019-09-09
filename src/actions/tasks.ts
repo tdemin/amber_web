@@ -47,6 +47,7 @@ export const refetchTasks = (localTasks: Task[]) =>
                 });
                 // second passthrough
                 localTasks.forEach((local) => {
+                    // check whether we haven't already pushed this task
                     if (!tasks.find((task) => task.ID === local.ID)) {
                         const remote = remoteTasks.find(
                             (val) => val.ID === local.ID
