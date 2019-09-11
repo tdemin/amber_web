@@ -45,8 +45,8 @@ class MainView extends React.Component<Props, State> {
     render = () => {
         const { username } = this.props;
         return (
-            <div className="root">
-                <div className="header">
+            <div className="root container">
+                <div className="navbar">
                     <div className="headerText">
                         <span className="loggedInMsg">
                             {strings.main_loggedInMsg}
@@ -57,25 +57,25 @@ class MainView extends React.Component<Props, State> {
                         <Link to="/task/new">
                             <input
                                 type="button"
-                                className="addBtn"
+                                className="addBtn button"
                                 value={strings.btns_addTask}
                             />
                         </Link>
                         <input
                             type="button"
-                            className="refetchBtn"
+                            className="refetchBtn button"
                             onClick={this.refetch}
                             value={strings.btns_refetch}
                         />
                         <input
                             type="button"
-                            className="logoutBtn"
+                            className="logoutBtn button"
                             onClick={this.logout}
                             value={strings.main_logoutBtn}
                         />
                     </div>
                 </div>
-                <div className="main">
+                <div className="main container">
                     <TaskList tasks={this.state.tasks}></TaskList>
                 </div>
             </div>
