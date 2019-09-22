@@ -1,15 +1,12 @@
-@import "common.scss";
+@import "./common.scss";
 
-div.header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+.navbar {
+    .headerRight {
+        max-width: $spacing * 12;
+    }
 }
 
 div.main {
-    margin: $spacing;
-    margin-left: $spacing * 2;
-    margin-top: $spacing * 4;
     .mainSubheading {
         font-weight: bolder;
     }

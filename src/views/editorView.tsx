@@ -105,23 +105,26 @@ class EditorView extends React.Component<Props, State> {
     render = () => {
         const task: Task = this.state.task;
         return (
-            <div className="root">
-                <div className="header">
-                    <div className="headerLeft">
+            <div className="root container">
+                <div className="navbar level">
+                    <div className="headerLeft level-left level-item">
                         <input
                             type="button"
+                            className="button"
                             onClick={this.props.history.goBack}
                             value={strings.btns_goBack}
                         />
                     </div>
-                    <div className="headerRight">
+                    <div className="headerRight level-right level-item level">
                         <input
                             type="button"
+                            className="button level-item"
                             value={strings.btns_updateTask}
                             onClick={this.saveChanges}
                         />
                         <input
                             type="button"
+                            className="button level-item"
                             value={strings.btns_deleteTask}
                             onClick={this.delete}
                             // we can't delete a task we haven't created yet
