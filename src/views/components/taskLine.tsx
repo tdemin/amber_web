@@ -51,20 +51,23 @@ class TaskLine extends React.Component<Props, State> {
     };
     render = () => {
         const { ID, Completed, Text } = this.state.task;
-        let classNames: string[] = ["taskLine"];
+        let classNames: string[] = ["taskLine", "level", "is-mobile"];
         if (Completed) classNames.push("taskCompleted");
         return (
             <div className={classNames.join(" ")}>
-                <div className="taskTextPart">
+                <div className="taskText level-item level-left">
                     <Link to={`/task/${ID}`}>
-                        <span className="taskID">#{ID}</span>
-                        {" - "}
+                        <span className="taskID">
+                            #{ID}
+                            {" - "}
+                        </span>
                         <span className="taskText">{Text}</span>
                     </Link>
                 </div>
-                <div className="taskButtons">
+                <div className="level-item level-right">
                     <input
                         type="button"
+                        className="button"
                         value={
                             Completed
                                 ? strings.task_toggleBtnCompleted

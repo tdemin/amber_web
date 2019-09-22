@@ -5,21 +5,24 @@ div.taskList {
     div.taskSubtree {
         margin-left: $spacing * 4;
         div.taskLine {
-            line-height: 1.5;
             border: 1px solid $borderColor;
             margin: $spacing;
             padding: $spacing;
             &.taskCompleted {
-                text-decoration: line-through;
+                .taskText {
+                    text-decoration: line-through;
+                }
                 background: darken(#ffffff, 20%);
             }
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            div.taskTextPart {
+            div.taskText {
                 flex-grow: 4;
+                // solves the problem with fitting text into the containers
+                width: min-content;
                 a {
-                    display: block;
+                    flex: 1;
                 }
             }
         }
@@ -38,6 +41,9 @@ div.taskList {
         /* do not indent top-level tasks */
         & > div.taskSubtree {
             margin-left: 0 !important;
+        }
+        .taskID {
+            display: none !important;
         }
     }
 }
