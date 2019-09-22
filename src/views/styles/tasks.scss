@@ -1,8 +1,7 @@
-@import "const.scss";
+@import "./const.scss";
 
 div.taskList {
-    margin: $spacing;
-    margin-top: $spacing * 4;
+    margin: 0 $spacing;
     div.taskSubtree {
         margin-left: $spacing * 4;
         div.taskLine {
@@ -25,12 +24,20 @@ div.taskList {
             }
         }
     }
+    /* do not indent top-level tasks */
+    & > div.taskSubtree {
+        margin-left: 0 !important;
+    }
 }
 
 @media (max-width: 600px) {
     div.taskList {
         div.taskSubtree {
             margin-left: $spacing * 1.5 !important;
+        }
+        /* do not indent top-level tasks */
+        & > div.taskSubtree {
+            margin-left: 0 !important;
         }
     }
 }
