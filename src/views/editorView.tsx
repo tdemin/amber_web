@@ -106,7 +106,7 @@ class EditorView extends React.Component<Props, State> {
         const task: Task = this.state.task;
         return (
             <div className="root container">
-                <div className="navbar level">
+                <div className="navbar level is-mobile">
                     <div className="headerLeft level-left level-item">
                         <input
                             type="button"
@@ -115,7 +115,7 @@ class EditorView extends React.Component<Props, State> {
                             value={strings.btns_goBack}
                         />
                     </div>
-                    <div className="headerRight level-right level-item level">
+                    <div className="headerRight level-right level-item level is-mobile">
                         <input
                             type="button"
                             className="button level-item"

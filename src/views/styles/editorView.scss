@@ -6,6 +6,12 @@
     }
 }
 
+@media (max-width: 600px) {
+    .container {
+        margin: 0 $spacing;
+    }
+}
+
 div.main {
     .subtitle {
         font-weight: bolder;
