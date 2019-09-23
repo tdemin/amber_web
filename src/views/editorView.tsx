@@ -79,9 +79,9 @@ class EditorView extends React.Component<Props, State> {
         task.Text = event.currentTarget.value;
         this.setState(() => ({ task: task }));
     };
-    updateStatus = (event: React.ChangeEvent<HTMLInputElement>) => {
+    updateStatus = () => {
         const { task } = this.state;
-        task.Completed = event.currentTarget.checked;
+        task.Completed = !task.Completed;
         this.setState(() => ({ task: task }));
     };
     updateParent = (event: React.FormEvent<HTMLSelectElement>) => {
@@ -133,42 +133,56 @@ class EditorView extends React.Component<Props, State> {
                     </div>
                 </div>
                 <div className="main">
-                    <span className="mainSubheading">
+                    <span className="subtitle">
                         #{task.ID} - {task.Text}
                     </span>
-                    <div className="editor">
-                        <div className="row level">
-                            <label className="label level-item">
-                                {strings.editor_statusTp}
-                            </label>
-                            <input
-                                className="level-item"
-                                type="checkbox"
-                                checked={task.Completed}
-                                onChange={this.updateStatus}
-                            />
-                        </div>
-                        <div className="row level">
-                            <label className="label level-item">
-                                {strings.editor_textTp}
-                            </label>
-                            <input
-                                className="level-item"
-                                type="text"
-                                onChange={this.updateText}
-                                value={task.Text}
-                            />
-                        </div>
-                        <div className="row level">
-                            <label className="label">
-                                {strings.editor_parentTp}
-                            </label>
-                            <TaskSelect
-                                className="level-item"
-                                current={task}
-                                initialValue={task.PID}
-                                onChange={this.updateParent}
-                            />
+                    {/* another div, needed for border styling fixes */}
+                    <div className="fix">
+                        <div className="editor">
+                            <div className="field">
+                                <label className="label">
+                                    {strings.editor_statusTp}
+                                </label>
+                                <div className="control">
+                                    <input
+                                        className="button"
+                                        type="button"
+                                        value={
+                                            task.Completed
+                                                ? strings.editor_completedTp
+                                                : strings.editor_pendingTp
+                                        }
+                                        onClick={this.updateStatus}
+                                    />
+                                </div>
+                            </div>
+                            <div className="field">
+                                <label className="label">
+                                    {strings.editor_textTp}
+                                </label>
+                                <div className="control">
+                                    <input
+                                        className="input"
+                                        type="text"
+                                        onChange={this.updateText}
+                                        value={task.Text}
+                                    />
+                                </div>
+                            </div>
+                            <div className="field">
+                                <label className="label">
+                                    {strings.editor_parentTp}
+                                </label>
+                                <div className="control">
+                                    <div className="select">
+                                        <TaskSelect
+                                            current={task}
+                                            initialValue={task.PID}
+                                            onChange={this.updateParent}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -14,6 +14,8 @@ export default new LocalizedStrings({
         btns_deleteTask: "Delete",
         btns_updateTask: "Save",
         editor_statusTp: "Status:",
+        editor_completedTp: "Completed",
+        editor_pendingTp: "Pending",
         editor_textTp: "Text:",
         editor_parentTp: "Parent:",
         editor_parentNoParentVal: "No parent",

@@ -7,21 +7,15 @@
 }
 
 div.main {
-    .mainSubheading {
+    .subtitle {
         font-weight: bolder;
     }
-    div.editor {
-        margin-top: $spacing * 2;
-        display: flex;
-        flex-direction: column;
-        .row {
-            max-width: 200px;
-            .label {
-                display: block;
-                min-width: $spacing * 8;
-                // fixes text/element vertical level
-                margin-bottom: 0px;
-            }
-        }
+    .fix {
+        border-top: $spacing / 4 solid $borderColor;
+        margin-top: $spacing;
+    }
+    .editor {
+        margin-top: $spacing;
+        max-width: 320px;
     }
 }
