@@ -1,31 +1,27 @@
-@import "common.scss";
+@import "./common.scss";
 
-div.header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+.navbar {
+    .headerRight {
+        max-width: $spacing * 12;
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        margin: 0 $spacing;
+    }
 }
 
 div.main {
-    margin: $spacing;
-    margin-left: $spacing * 2;
-    margin-top: $spacing * 4;
-    .mainSubheading {
+    .subtitle {
         font-weight: bolder;
     }
-    div.editor {
-        margin-top: $spacing * 2;
-        display: flex;
-        flex-direction: column;
-        .row {
-            display: flex;
-            flex-direction: row;
-            align-content: center;
-            margin: $spacing 0;
-            .label {
-                display: block;
-                min-width: $spacing * 8;
-            }
-        }
+    .fix {
+        border-top: $spacing / 4 solid $borderColor;
+        margin-top: $spacing;
+    }
+    .editor {
+        margin-top: $spacing;
+        max-width: 320px;
     }
 }

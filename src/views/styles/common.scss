@@ -1,8 +1,9 @@
-@import "const.scss";
+@import "./const.scss";
+
+@import "bulma/bulma.sass";
 
 div.root {
     max-width: 720px;
-    margin: auto;
     margin-top: $spacing * 4;
     margin-bottom: $spacing * 4;
     font-family: Arial, Helvetica, sans-serif;
