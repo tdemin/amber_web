@@ -41,20 +41,28 @@ class LoginForm extends React.PureComponent<Props, State> {
     login = () =>
         this.props.dispatch(login(this.state.username, this.state.password));
     render = () => (
-        <div className="root">
+        <div className="root container">
             <form className="loginForm">
-                <input
-                    type="text"
-                    className="usernameField"
-                    placeholder={strings.login_userNameTp}
-                    onChange={this.updateUserName}
-                />
-                <input
-                    type="password"
-                    className="passwordField"
-                    placeholder={strings.login_passwordTp}
-                    onChange={this.updatePassword}
-                />
+                <div className="field">
+                    <label className="label">{strings.login_userNameTp}</label>
+                    <div className="control">
+                        <input
+                            className="input"
+                            type="text"
+                            onChange={this.updateUserName}
+                        />
+                    </div>
+                </div>
+                <div className="field">
+                    <label className="label">{strings.login_passwordTp}</label>
+                    <div className="control">
+                        <input
+                            className="input"
+                            type="password"
+                            onChange={this.updatePassword}
+                        />
+                    </div>
+                </div>
                 <span
                     className="wrongPassTooltip"
                     style={{
@@ -65,7 +73,7 @@ class LoginForm extends React.PureComponent<Props, State> {
                 </span>
                 <input
                     type="button"
-                    className="submitBtn"
+                    className="button"
                     value={strings.login_loginBtn}
                     onClick={this.login}
                 />
