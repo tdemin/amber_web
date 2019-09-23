@@ -15,13 +15,12 @@ div.main {
         display: flex;
         flex-direction: column;
         .row {
-            display: flex;
-            flex-direction: row;
-            align-content: center;
-            margin: $spacing 0;
+            max-width: 200px;
             .label {
                 display: block;
                 min-width: $spacing * 8;
+                // fixes text/element vertical level
+                margin-bottom: 0px;
             }
         }
     }

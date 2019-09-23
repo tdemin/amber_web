@@ -137,31 +137,34 @@ class EditorView extends React.Component<Props, State> {
                         #{task.ID} - {task.Text}
                     </span>
                     <div className="editor">
-                        <div className="row">
-                            <label className="label">
+                        <div className="row level">
+                            <label className="label level-item">
                                 {strings.editor_statusTp}
                             </label>
                             <input
+                                className="level-item"
                                 type="checkbox"
                                 checked={task.Completed}
                                 onChange={this.updateStatus}
                             />
                         </div>
-                        <div className="row">
-                            <label className="label">
+                        <div className="row level">
+                            <label className="label level-item">
                                 {strings.editor_textTp}
                             </label>
                             <input
+                                className="level-item"
                                 type="text"
                                 onChange={this.updateText}
                                 value={task.Text}
                             />
                         </div>
-                        <div className="row">
+                        <div className="row level">
                             <label className="label">
                                 {strings.editor_parentTp}
                             </label>
                             <TaskSelect
+                                className="level-item"
                                 current={task}
                                 initialValue={task.PID}
                                 onChange={this.updateParent}

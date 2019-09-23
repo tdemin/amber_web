@@ -1,4 +1,4 @@
-import React from "react";
+import React, { HTMLAttributes } from "react";
 import { connect } from "react-redux";
 
 import { Store } from "../../typings/store";
@@ -10,14 +10,18 @@ const mapStateToProps = (state: Store) => ({
     tasks: state.task.tasks,
 });
 
-interface Props {
+interface Props extends HTMLAttributes<HTMLSelectElement> {
     tasks: Task[];
     current: Task;
     initialValue: number;
     onChange: (event: React.FormEvent<HTMLSelectElement>) => void;
 }
 const TaskSelect: React.FC<Props> = (props) => (
-    <select onChange={props.onChange} value={props.initialValue}>
+    <select
+        onChange={props.onChange}
+        value={props.initialValue}
+        className={props.className}
+    >
         <option value={0}>{strings.editor_parentNoParentVal}</option>
         {props.tasks.map(
             (task) =>
