@@ -1,9 +1,9 @@
 import React from "react";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
+import { RouteComponentProps } from "react-router-dom";
 
 import TaskList from "./components/taskList";
-import Link from "./components/link";
 
 import { logout } from "../actions/auth";
 import { refetchTasks } from "../actions/tasks";
@@ -20,7 +20,7 @@ const mapStateToProps = (state: Store) => ({
     username: state.auth.username,
 });
 
-interface Props {
+interface Props extends RouteComponentProps {
     dispatch: ThunkDispatch<any, any, AnyAction>;
     tasks: Task[];
     username?: string;
@@ -34,6 +34,7 @@ class MainView extends React.Component<Props, State> {
     };
     logout = () => this.props.dispatch(logout());
     refetch = () => this.props.dispatch(refetchTasks(this.props.tasks));
+    toNewTask = () => this.props.history.push("/task/new");
     componentDidMount = () => this.refetch();
     componentDidUpdate = (prevProps: Props) => {
         if (prevProps.tasks !== this.props.tasks) {
@@ -45,37 +46,33 @@ class MainView extends React.Component<Props, State> {
     render = () => {
         const { username } = this.props;
         return (
-            <div className="root">
-                <div className="header">
-                    <div className="headerText">
-                        <span className="loggedInMsg">
-                            {strings.main_loggedInMsg}
-                            <span className="userName">{username}</span>
-                        </span>
+            <div className="root container">
+                <div className="navbar level">
+                    <div className="headerText level-left level-item">
+                        {`${strings.main_loggedInMsg} ${username}`}
                     </div>
-                    <div className="headerButtons">
-                        <Link to="/task/new">
-                            <input
-                                type="button"
-                                className="addBtn"
-                                value={strings.btns_addTask}
-                            />
-                        </Link>
+                    <div className="headerButtons level-right level-item level is-mobile">
                         <input
                             type="button"
-                            className="refetchBtn"
+                            className="addBtn button level-item"
+                            value={strings.btns_addTask}
+                            onClick={this.toNewTask}
+                        />
+                        <input
+                            type="button"
+                            className="refetchBtn button level-item"
                             onClick={this.refetch}
                             value={strings.btns_refetch}
                         />
                         <input
                             type="button"
-                            className="logoutBtn"
+                            className="logoutBtn button level-item"
                             onClick={this.logout}
                             value={strings.main_logoutBtn}
                         />
                     </div>
                 </div>
-                <div className="main">
+                <div className="container">
                     <TaskList tasks={this.state.tasks}></TaskList>
                 </div>
             </div>

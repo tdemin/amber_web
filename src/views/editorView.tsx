@@ -79,9 +79,9 @@ class EditorView extends React.Component<Props, State> {
         task.Text = event.currentTarget.value;
         this.setState(() => ({ task: task }));
     };
-    updateStatus = (event: React.ChangeEvent<HTMLInputElement>) => {
+    updateStatus = () => {
         const { task } = this.state;
-        task.Completed = event.currentTarget.checked;
+        task.Completed = !task.Completed;
         this.setState(() => ({ task: task }));
     };
     updateParent = (event: React.FormEvent<HTMLSelectElement>) => {
@@ -105,23 +105,26 @@ class EditorView extends React.Component<Props, State> {
     render = () => {
         const task: Task = this.state.task;
         return (
-            <div className="root">
-                <div className="header">
-                    <div className="headerLeft">
+            <div className="root container">
+                <div className="navbar level is-mobile">
+                    <div className="headerLeft level-left level-item">
                         <input
                             type="button"
+                            className="button"
                             onClick={this.props.history.goBack}
                             value={strings.btns_goBack}
                         />
                     </div>
-                    <div className="headerRight">
+                    <div className="headerRight level-right level-item level is-mobile">
                         <input
                             type="button"
+                            className="button level-item"
                             value={strings.btns_updateTask}
                             onClick={this.saveChanges}
                         />
                         <input
                             type="button"
+                            className="button level-item"
                             value={strings.btns_deleteTask}
                             onClick={this.delete}
                             // we can't delete a task we haven't created yet
@@ -130,39 +133,56 @@ class EditorView extends React.Component<Props, State> {
                     </div>
                 </div>
                 <div className="main">
-                    <span className="mainSubheading">
+                    <span className="subtitle">
                         #{task.ID} - {task.Text}
                     </span>
-                    <div className="editor">
-                        <div className="row">
-                            <label className="label">
-                                {strings.editor_statusTp}
-                            </label>
-                            <input
-                                type="checkbox"
-                                checked={task.Completed}
-                                onChange={this.updateStatus}
-                            />
-                        </div>
-                        <div className="row">
-                            <label className="label">
-                                {strings.editor_textTp}
-                            </label>
-                            <input
-                                type="text"
-                                onChange={this.updateText}
-                                value={task.Text}
-                            />
-                        </div>
-                        <div className="row">
-                            <label className="label">
-                                {strings.editor_parentTp}
-                            </label>
-                            <TaskSelect
-                                current={task}
-                                initialValue={task.PID}
-                                onChange={this.updateParent}
-                            />
+                    {/* another div, needed for border styling fixes */}
+                    <div className="fix">
+                        <div className="editor">
+                            <div className="field">
+                                <label className="label">
+                                    {strings.editor_statusTp}
+                                </label>
+                                <div className="control">
+                                    <input
+                                        className="button"
+                                        type="button"
+                                        value={
+                                            task.Completed
+                                                ? strings.editor_completedTp
+                                                : strings.editor_pendingTp
+                                        }
+                                        onClick={this.updateStatus}
+                                    />
+                                </div>
+                            </div>
+                            <div className="field">
+                                <label className="label">
+                                    {strings.editor_textTp}
+                                </label>
+                                <div className="control">
+                                    <input
+                                        className="input"
+                                        type="text"
+                                        onChange={this.updateText}
+                                        value={task.Text}
+                                    />
+                                </div>
+                            </div>
+                            <div className="field">
+                                <label className="label">
+                                    {strings.editor_parentTp}
+                                </label>
+                                <div className="control">
+                                    <div className="select">
+                                        <TaskSelect
+                                            current={task}
+                                            initialValue={task.PID}
+                                            onChange={this.updateParent}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
