@@ -6,7 +6,7 @@ import { RouteComponentProps } from "react-router-dom";
 import TaskList from "./components/taskList";
 
 import { logout } from "../actions/auth";
-import { refetchTasks } from "../actions/tasks";
+import { refetchTasks, deleteTask } from "../actions/tasks";
 import { AnyAction } from "../typings/actions";
 import { Task } from "../typings/tasks";
 import { Store } from "../typings/store";
@@ -36,6 +36,14 @@ class MainView extends React.Component<Props, State> {
     };
     logout = () => this.props.dispatch(logout());
     refetch = () => this.props.dispatch(refetchTasks(this.props.tasks));
+    prune = () => {
+        const danglingTasks = this.state.tasks.filter(
+            (task) =>
+                this.state.tasks.filter((child) => child.PID === task.ID)
+                    .length === 0 && task.Completed
+        );
+        danglingTasks.forEach((task) => this.props.dispatch(deleteTask(task)));
+    };
     updateSearch = (event: React.FormEvent<HTMLInputElement>) =>
         this.setState({
             search: event.currentTarget.value,
@@ -70,6 +78,12 @@ class MainView extends React.Component<Props, State> {
                             className="refetchBtn button level-item"
                             onClick={this.refetch}
                             value={strings.btns_refetch}
+                        />
+                        <input
+                            type="button"
+                            className="pruneBtn button level-item"
+                            onClick={this.prune}
+                            value={strings.btns_pruneTasks}
                         />
                         <input
                             type="button"

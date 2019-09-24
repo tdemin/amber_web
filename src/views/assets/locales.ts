@@ -13,6 +13,7 @@ export default new LocalizedStrings({
         btns_refetch: "Update",
         btns_addTask: "New task",
         btns_deleteTask: "Delete",
+        btns_pruneTasks: "Prune",
         btns_updateTask: "Save",
         editor_statusTp: "Status:",
         editor_completedTp: "Completed",
