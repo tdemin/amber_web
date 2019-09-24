@@ -66,6 +66,7 @@ class MainView extends React.Component<Props, State> {
                     <div className="headerText level-left level-item">
                         {`${strings.main_loggedInMsg} ${username}`}
                     </div>
+                    {/* eslint-disable-next-line max-len */}
                     <div className="headerButtons level-right level-item level is-mobile">
                         <input
                             type="button"

@@ -68,7 +68,8 @@ export const refetchTasks = (localTasks: Task[]) =>
                         } else {
                             if (local.ToSync) {
                                 req.post("/task", taskToRecord(local));
-                                // not pushing the task so we don't cause collisions
+                                // not pushing the task so we don't
+                                // cause collisions
                             }
                             if (local.ToRemove) {
                                 req.delete(`/task/${local.ID}`);

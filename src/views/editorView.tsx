@@ -115,6 +115,7 @@ class EditorView extends React.Component<Props, State> {
                             value={strings.btns_goBack}
                         />
                     </div>
+                    {/* eslint-disable-next-line max-len */}
                     <div className="headerRight level-right level-item level is-mobile">
                         <input
                             type="button"
