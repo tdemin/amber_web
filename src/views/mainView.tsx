@@ -5,8 +5,9 @@ import { RouteComponentProps } from "react-router-dom";
 
 import TaskList from "./components/taskList";
 
+import { appHomePage } from "../const";
 import { logout } from "../actions/auth";
-import { refetchTasks } from "../actions/tasks";
+import { refetchTasks, deleteTask } from "../actions/tasks";
 import { AnyAction } from "../typings/actions";
 import { Task } from "../typings/tasks";
 import { Store } from "../typings/store";
@@ -27,13 +28,27 @@ interface Props extends RouteComponentProps {
 }
 interface State {
     tasks: Task[];
+    search: string;
 }
 class MainView extends React.Component<Props, State> {
     state = {
         tasks: this.props.tasks,
+        search: "",
     };
     logout = () => this.props.dispatch(logout());
     refetch = () => this.props.dispatch(refetchTasks(this.props.tasks));
+    prune = () => {
+        const danglingTasks = this.state.tasks.filter(
+            (task) =>
+                this.state.tasks.filter((child) => child.PID === task.ID)
+                    .length === 0 && task.Completed
+        );
+        danglingTasks.forEach((task) => this.props.dispatch(deleteTask(task)));
+    };
+    updateSearch = (event: React.FormEvent<HTMLInputElement>) =>
+        this.setState({
+            search: event.currentTarget.value,
+        });
     toNewTask = () => this.props.history.push("/task/new");
     componentDidMount = () => this.refetch();
     componentDidUpdate = (prevProps: Props) => {
@@ -45,12 +60,14 @@ class MainView extends React.Component<Props, State> {
     };
     render = () => {
         const { username } = this.props;
+        const { tasks, search } = this.state;
         return (
             <div className="root container">
                 <div className="navbar level">
                     <div className="headerText level-left level-item">
                         {`${strings.main_loggedInMsg} ${username}`}
                     </div>
+                    {/* eslint-disable-next-line max-len */}
                     <div className="headerButtons level-right level-item level is-mobile">
                         <input
                             type="button"
@@ -66,6 +83,12 @@ class MainView extends React.Component<Props, State> {
                         />
                         <input
                             type="button"
+                            className="pruneBtn button level-item"
+                            onClick={this.prune}
+                            value={strings.btns_pruneTasks}
+                        />
+                        <input
+                            type="button"
                             className="logoutBtn button level-item"
                             onClick={this.logout}
                             value={strings.main_logoutBtn}
@@ -73,7 +96,25 @@ class MainView extends React.Component<Props, State> {
                     </div>
                 </div>
                 <div className="container">
-                    <TaskList tasks={this.state.tasks}></TaskList>
+                    <div className="field searchBox">
+                        <div className="control">
+                            <input
+                                type="text"
+                                className="input"
+                                placeholder={strings.main_searchTp}
+                                autoFocus
+                                onChange={this.updateSearch}
+                            />
+                        </div>
+                    </div>
+                    <TaskList tasks={tasks} search={search}></TaskList>
+                </div>
+                <div className="app_footer">
+                    <div className="level">
+                        <a className="level-item text link" href={appHomePage}>
+                            {strings.app_versionString}
+                        </a>
+                    </div>
                 </div>
             </div>
         );

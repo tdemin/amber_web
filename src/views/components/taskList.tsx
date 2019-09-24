@@ -30,14 +30,26 @@ const TaskTree: React.FC<TreeProps> = (props) => (
 
 interface Props {
     tasks: Task[];
+    search: string;
 }
 
 const TaskList: React.FC<Props> = (props) => {
-    const { tasks } = props;
-    const rootTasks = tasks.filter((task) => task.PID === 0);
+    const { tasks, search } = props;
+    let displayTasks: Task[];
+    if (search) {
+        displayTasks = tasks.filter(
+            (value) =>
+                value.Text.toLocaleLowerCase().includes(
+                    search.toLocaleLowerCase()
+                ) ||
+                search
+                    .toLocaleLowerCase()
+                    .includes(value.Text.toLocaleLowerCase())
+        );
+    } else displayTasks = tasks.filter((task) => task.PID === 0);
     return (
         <div className="taskList">
-            {rootTasks.map((task) => (
+            {displayTasks.map((task) => (
                 <TaskTree tasks={tasks} parent={task} level={0} key={task.ID} />
             ))}
         </div>
