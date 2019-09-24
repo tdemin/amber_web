@@ -5,6 +5,7 @@ import { RouteComponentProps } from "react-router-dom";
 
 import TaskList from "./components/taskList";
 
+import { appHomePage } from "../const";
 import { logout } from "../actions/auth";
 import { refetchTasks, deleteTask } from "../actions/tasks";
 import { AnyAction } from "../typings/actions";
@@ -110,9 +111,9 @@ class MainView extends React.Component<Props, State> {
                 </div>
                 <div className="app_footer">
                     <div className="level">
-                        <span className="level-item text">
+                        <a className="level-item text link" href={appHomePage}>
                             {strings.app_versionString}
-                        </span>
+                        </a>
                     </div>
                 </div>
             </div>
