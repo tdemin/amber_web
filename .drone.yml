@@ -9,7 +9,7 @@ steps:
   commands:
   - node -v
   - yarn install
-  - yarn run eslint src
+  - yarn lint
   when:
     branch:
       exclude:
