@@ -1,5 +1,7 @@
 import LocalizedStrings from "react-localization";
 
+import { appVersion, appFullName, appAuthor } from "../../const";
+
 export default new LocalizedStrings({
     en: {
         login_loginBtn: "Login",
@@ -23,5 +25,6 @@ export default new LocalizedStrings({
         editor_parentNoParentVal: "No parent",
         task_toggleBtnCompleted: "Completed",
         task_toggleBtnPending: "Pending",
+        app_versionString: `${appFullName} v${appVersion} by ${appAuthor}`,
     },
 });

@@ -108,6 +108,13 @@ class MainView extends React.Component<Props, State> {
                     </div>
                     <TaskList tasks={tasks} search={search}></TaskList>
                 </div>
+                <div className="app_footer">
+                    <div className="level">
+                        <span className="level-item text">
+                            {strings.app_versionString}
+                        </span>
+                    </div>
+                </div>
             </div>
         );
     };

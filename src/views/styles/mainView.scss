@@ -4,6 +4,10 @@ div.searchBox {
     margin: $spacing * 2;
 }
 
+div.app_footer {
+    margin-top: $spacing * 2;
+}
+
 @media (max-width: 600px) {
     div.headerText {
         display: none;
