@@ -11,6 +11,8 @@ export const taskFromRecord = (task: TaskRecord): Task => {
     newTask.Text = "text" in task ? (task.text as string) : "";
     newTask.Completed = task.status !== 0 ? true : false;
     newTask.LastMod = task.last_mod as number;
+    newTask.Deadline = "deadline" in task ? (task.deadline as number) : 0;
+    newTask.Reminder = "reminder" in task ? (task.reminder as number) : 0;
     return newTask;
 };
 
@@ -24,6 +26,8 @@ export const taskToRecord = (task: Task): TaskRecord => {
         parent_id: task.PID,
         text: task.Text,
         status: task.Completed ? 1 : 0,
+        deadline: task.Deadline,
+        reminder: task.Reminder,
     } as TaskRecord;
     return record;
 };
