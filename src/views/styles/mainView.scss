@@ -1,5 +1,9 @@
 @import "./common.scss";
 
+div.searchBox {
+    margin: $spacing * 2;
+}
+
 @media (max-width: 600px) {
     div.headerText {
         display: none;

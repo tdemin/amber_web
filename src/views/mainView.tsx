@@ -27,13 +27,19 @@ interface Props extends RouteComponentProps {
 }
 interface State {
     tasks: Task[];
+    search: string;
 }
 class MainView extends React.Component<Props, State> {
     state = {
         tasks: this.props.tasks,
+        search: "",
     };
     logout = () => this.props.dispatch(logout());
     refetch = () => this.props.dispatch(refetchTasks(this.props.tasks));
+    updateSearch = (event: React.FormEvent<HTMLInputElement>) =>
+        this.setState({
+            search: event.currentTarget.value,
+        });
     toNewTask = () => this.props.history.push("/task/new");
     componentDidMount = () => this.refetch();
     componentDidUpdate = (prevProps: Props) => {
@@ -45,6 +51,7 @@ class MainView extends React.Component<Props, State> {
     };
     render = () => {
         const { username } = this.props;
+        const { tasks, search } = this.state;
         return (
             <div className="root container">
                 <div className="navbar level">
@@ -73,7 +80,18 @@ class MainView extends React.Component<Props, State> {
                     </div>
                 </div>
                 <div className="container">
-                    <TaskList tasks={this.state.tasks}></TaskList>
+                    <div className="field searchBox">
+                        <div className="control">
+                            <input
+                                type="text"
+                                className="input"
+                                placeholder={strings.main_searchTp}
+                                autoFocus
+                                onChange={this.updateSearch}
+                            />
+                        </div>
+                    </div>
+                    <TaskList tasks={tasks} search={search}></TaskList>
                 </div>
             </div>
         );
