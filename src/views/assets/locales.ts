@@ -13,7 +13,7 @@ export default new LocalizedStrings({
         main_searchTp: "Search tasks...",
         btns_goBack: "Back",
         btns_refetch: "Update",
-        btns_addTask: "New task",
+        btns_addTask: "New",
         btns_deleteTask: "Delete",
         btns_pruneTasks: "Prune",
         btns_updateTask: "Save",
