@@ -17,30 +17,30 @@ export const taskReducer = (
         case Actions.TasksFetch:
             return { tasks: action.data as Task[], lastMod: Date.now() };
         case Actions.TasksFetchError:
-            return { ...state, lastMod: Date.now() };
+            return { tasks: [...state.tasks], lastMod: Date.now() };
         case Actions.TaskCreate: {
             state.tasks.push(action.data as Task);
-            return { ...state, lastMod: Date.now() };
+            return { tasks: [...state.tasks], lastMod: Date.now() };
         }
         case Actions.TaskCreateError: {
             const newTask = action.data as Task;
             newTask.ToSync = true;
             state.tasks.push(newTask);
-            return { ...state, lastMod: Date.now() };
+            return { tasks: [...state.tasks], lastMod: Date.now() };
         }
         case Actions.TaskDelete: {
             const index = state.tasks.findIndex(
                 (task) => task.ID === (action.data as Task).ID
             );
             state.tasks.splice(index);
-            return { ...state, lastMod: Date.now() };
+            return { tasks: [...state.tasks], lastMod: Date.now() };
         }
         case Actions.TaskDeleteError: {
             const index = state.tasks.findIndex(
                 (task) => task.ID === (action.data as Task).ID
             );
             state.tasks[index].ToRemove = true;
-            return { ...state, lastMod: Date.now() };
+            return { tasks: [...state.tasks], lastMod: Date.now() };
         }
         case Actions.TaskUpdate: {
             const index = state.tasks.findIndex(
@@ -48,7 +48,7 @@ export const taskReducer = (
             );
             state.tasks[index] = action.data as Task;
             state.tasks[index].LastMod = Date.now();
-            return { ...state, lastMod: Date.now() };
+            return { tasks: [...state.tasks], lastMod: Date.now() };
         }
         case Actions.TaskUpdateError: {
             const index = state.tasks.findIndex(
@@ -57,7 +57,7 @@ export const taskReducer = (
             state.tasks[index] = action.data as Task;
             state.tasks[index].ToSync = true;
             state.tasks[index].LastMod = Date.now();
-            return { ...state, lastMod: Date.now() };
+            return { tasks: [...state.tasks], lastMod: Date.now() };
         }
         default:
             return state;

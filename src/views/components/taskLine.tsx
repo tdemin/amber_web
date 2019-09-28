@@ -6,21 +6,15 @@ import Link from "../components/link";
 
 import { TaskAction } from "../../typings/actions";
 import { Task } from "../../typings/tasks";
-import { Store } from "../../typings/store";
 
 import { updateTask } from "../../actions/tasks";
 
 import strings from "../assets/locales";
 
-const mapStateToProps = (state: Store) => ({
-    lastMod: state.task.lastMod,
-});
-
 interface Props {
     level: number;
     task: Task;
     dispatch: ThunkDispatch<any, any, TaskAction>;
-    lastMod: number;
 }
 interface State {
     task: Task;
@@ -28,17 +22,11 @@ interface State {
 class TaskLine extends React.Component<Props, State> {
     state = {
         task: this.props.task,
-        // Hack, needed for forcing rerenders.
-        lastMod: this.props.lastMod,
     };
     componentDidUpdate = (prevProps: Props) => {
-        if (
-            prevProps.task !== this.props.task ||
-            prevProps.lastMod !== this.props.lastMod
-        ) {
+        if (prevProps.task !== this.props.task) {
             this.setState(() => ({
                 task: this.props.task,
-                lastMod: this.props.lastMod,
             }));
         }
     };
@@ -81,4 +69,4 @@ class TaskLine extends React.Component<Props, State> {
     };
 }
 
-export default connect(mapStateToProps)(TaskLine);
+export default connect()(TaskLine);
