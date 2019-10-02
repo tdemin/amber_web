@@ -171,6 +171,7 @@ class EditorView extends React.Component<Props, State> {
                                     <input
                                         className="input"
                                         type="text"
+                                        autoFocus
                                         onChange={this.updateText}
                                         value={task.Text}
                                     />
