@@ -24,17 +24,15 @@ class TaskLine extends React.Component<Props, State> {
         task: this.props.task,
     };
     componentDidUpdate = (prevProps: Props) => {
-        if (prevProps.task !== this.props.task) {
-            this.setState(() => ({
+        if (prevProps !== this.props) {
+            this.setState({
                 task: this.props.task,
-            }));
+            });
         }
     };
     toggleTask = (): void => {
-        const task: Task = this.state.task;
+        const task: Task = { ...this.state.task };
         task.Completed = !task.Completed;
-        // wait, we are modifying an object that is supposed to be immutable in
-        // the state?
         this.props.dispatch(updateTask(task));
     };
     render = () => {
