@@ -40,15 +40,19 @@ class LoginForm extends React.PureComponent<Props, State> {
         this.setState({ password: event.currentTarget.value });
     login = () =>
         this.props.dispatch(login(this.state.username, this.state.password));
+    onKeyPress = (event: React.KeyboardEvent<HTMLElement>) => {
+        if (event.key === "Enter") this.login();
+    };
     render = () => (
         <div className="root container">
-            <form className="loginForm">
+            <form className="loginForm" onKeyPress={this.onKeyPress}>
                 <div className="field">
                     <label className="label">{strings.login_userNameTp}</label>
                     <div className="control">
                         <input
                             className="input"
                             type="text"
+                            autoFocus
                             onChange={this.updateUserName}
                         />
                     </div>

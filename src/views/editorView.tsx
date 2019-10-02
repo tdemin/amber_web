@@ -30,6 +30,7 @@ interface Props extends RouteComponentProps {
 interface State {
     task?: Task;
     newTask: boolean;
+    title: string;
 }
 class EditorView extends React.Component<Props, State> {
     state = {
@@ -40,14 +41,18 @@ class EditorView extends React.Component<Props, State> {
             PID: 0,
         } as Task,
         newTask: false,
+        title: "",
     };
     componentDidMount = () => {
         // editing or creating a new task?
         if (this.props.match.params.id !== "new") {
             const id = parseInt(this.props.match.params.id);
-            const task = this.props.tasks.find((task) => task.ID === id);
+            const task = this.props.tasks.find(
+                (task) => task.ID === id
+            ) as Task;
             this.setState(() => ({
                 task: task,
+                title: task.Text,
             }));
         } else {
             // create a new task
@@ -65,6 +70,7 @@ class EditorView extends React.Component<Props, State> {
             this.setState({
                 task: newTask,
                 newTask: true,
+                title: strings.editor_newTaskTitle,
             });
         }
     };
@@ -103,7 +109,7 @@ class EditorView extends React.Component<Props, State> {
         }, 200);
     };
     render = () => {
-        const task: Task = this.state.task;
+        const { task, title } = this.state;
         return (
             <div className="root container">
                 <div className="navbar level is-mobile">
@@ -135,7 +141,7 @@ class EditorView extends React.Component<Props, State> {
                 </div>
                 <div className="main">
                     <span className="subtitle">
-                        #{task.ID} - {task.Text}
+                        #{task.ID} - {title}
                     </span>
                     {/* another div, needed for border styling fixes */}
                     <div className="fix">
@@ -165,6 +171,7 @@ class EditorView extends React.Component<Props, State> {
                                     <input
                                         className="input"
                                         type="text"
+                                        autoFocus
                                         onChange={this.updateText}
                                         value={task.Text}
                                     />
