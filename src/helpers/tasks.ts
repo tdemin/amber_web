@@ -27,3 +27,71 @@ export const taskToRecord = (task: Task): TaskRecord => {
     } as TaskRecord;
     return record;
 };
+
+export interface TaskMergeResult {
+    result: Task[];
+    toDelete: Task[];
+    toUpdate: Task[];
+    toSync: Task[];
+}
+
+/**
+ * Merges two task lists based on their modtimes. Prefers remote tasks on
+ * matching modtimes. Returns the four lists: the merged task list, the list
+ * of tasks to be sent for deletion, and the list of tasks to be pushed to the
+ * server as well as the list of tasks to be updated remotely.
+ * @param remote Task list received from remote server
+ * @param local Task list version stored locally
+ */
+export const mergeTasks = (
+    remoteTasks: Task[],
+    localTasks: Task[]
+): TaskMergeResult => {
+    const result: Task[] = [],
+        toDelete: Task[] = [],
+        toSync: Task[] = [],
+        toUpdate: Task[] = [];
+    // first passthrough
+    remoteTasks.forEach((remote) => {
+        // prettier-ignore
+        const local = localTasks.find((val) => val.ID === remote.ID);
+        if (local) {
+            // matching local task found, comparing modtimes
+            if (local.LastMod > remote.LastMod) {
+                result.push(local);
+                toUpdate.push(local);
+            } else result.push(remote);
+        } else {
+            // matching local task not found, adding a new task to the store
+            result.push(remote);
+        }
+    });
+    // second passthrough
+    localTasks.forEach((local) => {
+        // check whether we haven't already pushed this task
+        if (!result.find((task) => task.ID === local.ID)) {
+            // prettier-ignore
+            const remote = remoteTasks.find((val) => val.ID === local.ID);
+            if (remote) {
+                if (local.LastMod >= remote.LastMod) {
+                    result.push(local);
+                    toUpdate.push(local);
+                } else {
+                    result.push(remote);
+                }
+                if (local.ToRemove) toDelete.push(local);
+            } else {
+                if (local.ToSync) {
+                    result.push(local);
+                    toSync.push(local);
+                }
+            }
+        }
+    });
+    return {
+        result: result,
+        toDelete: toDelete,
+        toSync: toSync,
+        toUpdate: toUpdate,
+    };
+};
