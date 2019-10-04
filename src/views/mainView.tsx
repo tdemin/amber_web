@@ -50,12 +50,22 @@ class MainView extends React.Component<Props, State> {
             search: event.currentTarget.value,
         });
     toNewTask = () => this.props.history.push("/task/new");
-    componentDidMount = () => this.refetch();
+    componentDidMount = () => {
+        this.refetch();
+        document.addEventListener("keydown", this.handleCtrlF);
+    };
     componentDidUpdate = (prevProps: Props) => {
         if (prevProps.tasks !== this.props.tasks) {
             this.setState({
                 tasks: this.props.tasks,
             });
+        }
+    };
+    handleCtrlF = (event: KeyboardEvent) => {
+        if ((event.ctrlKey || event.metaKey) && event.key === "f") {
+            event.preventDefault();
+            const search = document.getElementById("searchInput");
+            (search as HTMLElement).focus();
         }
     };
     render = () => {
@@ -101,8 +111,8 @@ class MainView extends React.Component<Props, State> {
                             <input
                                 type="text"
                                 className="input"
+                                id="searchInput"
                                 placeholder={strings.main_searchTp}
-                                autoFocus
                                 onChange={this.updateSearch}
                             />
                         </div>
