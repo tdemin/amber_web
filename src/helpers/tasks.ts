@@ -61,6 +61,7 @@ export const mergeTasks = (
                 result.push(local);
                 toUpdate.push(local);
             } else result.push(remote);
+            if (local.ToRemove) toDelete.push(local);
         } else {
             // matching local task not found, adding a new task to the store
             result.push(remote);
