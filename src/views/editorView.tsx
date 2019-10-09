@@ -73,6 +73,35 @@ class EditorView extends React.Component<Props, State> {
                 title: strings.editor_newTaskTitle,
             });
         }
+        document.addEventListener("keydown", this.handleHotkeys);
+    };
+    componentWillUnmount = () => {
+        document.removeEventListener("keydown", this.handleHotkeys);
+    };
+    handleHotkeys = (event: KeyboardEvent) => {
+        const textInput = document.getElementById("taskTextInput");
+        const parentSelect = document.getElementById("taskParentSelect");
+        const statusBtn = document.getElementById("taskStatusButton");
+        const editFocused =
+            document.activeElement === textInput ||
+            document.activeElement === parentSelect ||
+            document.activeElement === statusBtn;
+        if (event.key === "b" && !editFocused) {
+            event.preventDefault();
+            this.props.history.push("/");
+        } else if (event.key === "s" && !editFocused) {
+            event.preventDefault();
+            this.saveChanges();
+        } else if (event.key === "d" && !editFocused && !this.state.newTask) {
+            event.preventDefault();
+            this.delete();
+        } else if (
+            event.keyCode === 27 &&
+            document.activeElement === textInput
+        ) {
+            event.preventDefault();
+            (textInput as HTMLElement).blur();
+        }
     };
     delete = () => {
         this.props.dispatch(deleteTask(this.state.task));
@@ -152,6 +181,7 @@ class EditorView extends React.Component<Props, State> {
                                 </label>
                                 <div className="control">
                                     <input
+                                        id="taskStatusButton"
                                         className="button"
                                         type="button"
                                         value={
@@ -169,6 +199,7 @@ class EditorView extends React.Component<Props, State> {
                                 </label>
                                 <div className="control">
                                     <input
+                                        id="taskTextInput"
                                         className="input"
                                         type="text"
                                         autoFocus
@@ -184,6 +215,7 @@ class EditorView extends React.Component<Props, State> {
                                 <div className="control">
                                     <div className="select">
                                         <TaskSelect
+                                            id="taskParentSelect"
                                             current={task}
                                             initialValue={task.PID}
                                             onChange={this.updateParent}

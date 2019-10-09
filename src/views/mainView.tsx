@@ -54,6 +54,9 @@ class MainView extends React.Component<Props, State> {
         this.refetch();
         document.addEventListener("keydown", this.handleHotkeys);
     };
+    componentWillUnmount = () => {
+        document.removeEventListener("keydown", this.handleHotkeys);
+    };
     componentDidUpdate = (prevProps: Props) => {
         if (prevProps.tasks !== this.props.tasks) {
             this.setState({
