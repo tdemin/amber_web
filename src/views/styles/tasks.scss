@@ -32,6 +32,9 @@ div.taskList {
     & > div.taskSubtree {
         margin-left: 0 !important;
     }
+    .taskToRemove {
+        display: none !important;
+    }
 }
 
 @media (max-width: 600px) {

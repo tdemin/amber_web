@@ -18,6 +18,7 @@ interface Props extends HTMLAttributes<HTMLSelectElement> {
 }
 const TaskSelect: React.FC<Props> = (props) => (
     <select
+        id={props.id}
         onChange={props.onChange}
         value={props.initialValue}
         className={props.className}

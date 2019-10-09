@@ -50,11 +50,38 @@ class MainView extends React.Component<Props, State> {
             search: event.currentTarget.value,
         });
     toNewTask = () => this.props.history.push("/task/new");
-    componentDidMount = () => this.refetch();
+    componentDidMount = () => {
+        this.refetch();
+        document.addEventListener("keydown", this.handleHotkeys);
+    };
+    componentWillUnmount = () => {
+        document.removeEventListener("keydown", this.handleHotkeys);
+    };
     componentDidUpdate = (prevProps: Props) => {
         if (prevProps.tasks !== this.props.tasks) {
             this.setState({
                 tasks: this.props.tasks,
+            });
+        }
+    };
+    handleHotkeys = (event: KeyboardEvent) => {
+        const search = document.getElementById("searchInput");
+        const searchFocused = document.activeElement === search;
+        if ((event.ctrlKey || event.metaKey) && event.key === "f") {
+            event.preventDefault();
+            (search as HTMLElement).focus();
+        } else if (event.key === "n" && !searchFocused) {
+            event.preventDefault();
+            this.toNewTask();
+        } else if (event.key === "u" && !searchFocused) {
+            event.preventDefault();
+            this.refetch();
+        } else if (event.keyCode === 27 && searchFocused) {
+            // unfocus search on Esc press
+            (document.activeElement as HTMLElement).blur();
+            event.preventDefault();
+            this.setState({
+                search: "",
             });
         }
     };
@@ -101,8 +128,8 @@ class MainView extends React.Component<Props, State> {
                             <input
                                 type="text"
                                 className="input"
+                                id="searchInput"
                                 placeholder={strings.main_searchTp}
-                                autoFocus
                                 onChange={this.updateSearch}
                             />
                         </div>
