@@ -140,7 +140,7 @@ class EditorView extends React.Component<Props, State> {
     render = () => {
         const { task, title } = this.state;
         return (
-            <div className="root container">
+            <div className="container editor_view">
                 <div className="navbar level is-mobile">
                     <div className="headerLeft level-left level-item">
                         <input

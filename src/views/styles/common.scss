@@ -2,10 +2,21 @@
 
 @import "bulma/bulma.sass";
 
-div.root {
-    max-width: 720px;
-    margin-top: $spacing * 4;
-    margin-bottom: $spacing * 4;
+div#root {
+    margin: $spacing * 2 $spacing;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12pt;
+}
+
+div.container {
+    max-width: 720px;
+}
+
+@media (max-width: 600px) {
+    div.container {
+        margin: 0 $spacing;
+    }
+    div.navbar {
+        margin-bottom: $spacing * 2 !important;
+    }
 }

@@ -44,7 +44,7 @@ class LoginForm extends React.PureComponent<Props, State> {
         if (event.key === "Enter") this.login();
     };
     render = () => (
-        <div className="root container">
+        <div className="container login_view">
             <form className="loginForm" onKeyPress={this.onKeyPress}>
                 <div className="field">
                     <label className="label">{strings.login_userNameTp}</label>

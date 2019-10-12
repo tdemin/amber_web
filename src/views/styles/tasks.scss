@@ -3,12 +3,12 @@
 div.taskList {
     margin: 0 $spacing;
     div.taskSubtree {
-        margin-left: $spacing * 4;
+        margin-left: $spacing * 8;
         div.taskLine {
             border: 1px solid $borderColor;
             border-radius: 3px;
-            margin: $spacing;
-            padding: $spacing;
+            margin: $spacing * 3 0;
+            padding: $spacing * 3;
             &.taskCompleted {
                 .taskText {
                     text-decoration: line-through;
@@ -40,7 +40,7 @@ div.taskList {
 @media (max-width: 600px) {
     div.taskList {
         div.taskSubtree {
-            margin-left: $spacing * 1.5 !important;
+            margin-left: $spacing * 8 !important;
         }
         /* do not indent top-level tasks */
         & > div.taskSubtree {
