@@ -1,11 +1,11 @@
 @import "./common.scss";
 
 div.searchBox {
-    margin: $spacing * 2;
+    margin: $spacing;
 }
 
 div.app_footer {
-    margin-top: $spacing * 2;
+    margin-top: $spacing * 4;
 }
 
 @media (max-width: 600px) {
@@ -13,6 +13,6 @@ div.app_footer {
         display: none;
     }
     div.headerButtons {
-        margin: 0 $spacing * 4;
+        margin: 0 $spacing;
     }
 }

@@ -1,18 +1,22 @@
 @import "./common.scss";
 
-.navbar {
-    .headerRight {
-        max-width: $spacing * 12;
-    }
+.navbar .headerRight {
+    // setting max-width here prevents the right side of the navbar
+    // from being stretched
+    max-width: $spacing * 12;
 }
 
 @media (max-width: 600px) {
-    .container {
-        margin: 0 $spacing;
+    .editor_view {
+        margin: 0 $spacing * 2 !important;
+    }
+    .navbar {
+        margin-top: $spacing * 8;
     }
 }
 
 div.main {
+    margin: $spacing;
     .subtitle {
         font-weight: bolder;
     }
@@ -21,7 +25,7 @@ div.main {
         margin-top: $spacing;
     }
     .editor {
-        margin-top: $spacing;
+        margin-top: $spacing * 2;
         max-width: 320px;
     }
 }

@@ -89,7 +89,7 @@ class MainView extends React.Component<Props, State> {
         const { username } = this.props;
         const { tasks, search } = this.state;
         return (
-            <div className="root container">
+            <div className="container list_view">
                 <div className="navbar level">
                     <div className="headerText level-left level-item">
                         {`${strings.main_loggedInMsg} ${username}`}
