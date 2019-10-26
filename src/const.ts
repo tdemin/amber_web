@@ -1,4 +1,5 @@
-export const baseURI: string = "https://amber.h.tdem.in/api";
+export const baseURI: string =
+    process.env.REACT_APP_APIURI || "https://amber.h.tdem.in/api";
 
 export const appVersion: string = "0.0.4";
 export const appFullName: string = "Amber Web";
