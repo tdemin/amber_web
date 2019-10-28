@@ -37,6 +37,13 @@ div.taskList {
     }
 }
 
+@media (min-width: 601px) {
+    div.taskLine {
+        margin: $spacing * 4 0 !important;
+        padding: $spacing * 4 !important;
+    }
+}
+
 @media (max-width: 600px) {
     div.taskList {
         div.taskSubtree {

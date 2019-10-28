@@ -12,6 +12,12 @@ div.container {
     max-width: 720px;
 }
 
+@media (min-width: 601px) {
+    div#root {
+        margin-top: $spacing * 16 !important;
+    }
+}
+
 @media (max-width: 600px) {
     div.container {
         margin: 0 $spacing;
