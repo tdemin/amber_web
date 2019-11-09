@@ -8,6 +8,8 @@ export default new LocalizedStrings({
         login_userNameTp: "User name",
         login_passwordTp: "Password",
         login_wrongPassTp: "Login failed. Check username and password.",
+        login_signupBtn: "Sign up",
+        login_goBackBtn: "Go back",
         main_loggedInMsg: "Logged in as",
         main_logoutBtn: "Logout",
         main_searchTp: "Search tasks...",

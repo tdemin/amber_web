@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Store } from "./typings/store";
 
 import LoginForm from "./views/loginForm";
+import SignupForm from "./views/signupForm";
 import MainView from "./views/mainView";
 import EditorView from "./views/editorView";
 
@@ -49,6 +50,11 @@ class App extends React.Component<Props, Props> {
                 <Router>
                     {!loggedIn && (
                         <Switch>
+                            <Route
+                                path="/signup"
+                                exact
+                                component={SignupForm}
+                            />
                             <Route path="/" exact component={LoginForm} />
                         </Switch>
                     )}
