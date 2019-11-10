@@ -1,6 +1,7 @@
 import React from "react";
 import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
+import { RouteComponentProps } from "react-router-dom";
 
 import { login } from "../actions/auth";
 import { AuthAction } from "../typings/actions";
@@ -20,7 +21,7 @@ interface State {
     password: string;
     loginFailed: boolean;
 }
-interface Props {
+interface Props extends RouteComponentProps {
     loginFailed?: boolean;
     dispatch: ThunkDispatch<any, any, AuthAction>;
 }
@@ -40,6 +41,7 @@ class LoginForm extends React.PureComponent<Props, State> {
         this.setState({ password: event.currentTarget.value });
     login = () =>
         this.props.dispatch(login(this.state.username, this.state.password));
+    toSignup = () => this.props.history.push("/signup");
     onKeyPress = (event: React.KeyboardEvent<HTMLElement>) => {
         if (event.key === "Enter") this.login();
     };
@@ -75,12 +77,28 @@ class LoginForm extends React.PureComponent<Props, State> {
                 >
                     {strings.login_wrongPassTp}
                 </span>
-                <input
-                    type="button"
-                    className="button"
-                    value={strings.login_loginBtn}
-                    onClick={this.login}
-                />
+                <div className="level is-mobile">
+                    <div className="level-item level-left">
+                        <div className="control">
+                            <input
+                                type="button"
+                                className="button"
+                                value={strings.login_loginBtn}
+                                onClick={this.login}
+                            />
+                        </div>
+                    </div>
+                    <div className="level-item level-right">
+                        <div className="control">
+                            <input
+                                type="button"
+                                className="button"
+                                onClick={this.toSignup}
+                                value={strings.login_signupBtn}
+                            />
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
     );
