@@ -58,6 +58,7 @@ class SignupForm extends React.PureComponent<RCP, State> {
     signup = () => {
         this.setState({ status: Status.IN_PROCESS });
         // prettier-ignore
+        /* eslint-disable */
         req.post("/signup", {
             name: this.state.name,
             password: this.state.password,
@@ -69,6 +70,7 @@ class SignupForm extends React.PureComponent<RCP, State> {
                 httpCode: (e.response as AxiosResponse).status
             })
         );
+        /* eslint-enable */
     };
     goBack = () => this.props.history.push("/");
     updateName = (e: React.FormEvent<HTMLInputElement>) =>
@@ -76,14 +78,16 @@ class SignupForm extends React.PureComponent<RCP, State> {
     updatePassword = (e: React.FormEvent<HTMLInputElement>) =>
         this.setState({ password: e.currentTarget.value });
     render = () => {
-        let message: string;
+        let msg: string;
         switch (this.state.httpCode) {
             case Errors.FORBIDDEN:
-                message = strings.signup_disabled;
+                msg = strings.signup_disabled;
+                break;
             case Errors.USER_EXISTS:
-                message = strings.signup_userExists;
+                msg = strings.signup_userExists;
+                break;
             default:
-                message = strings.signup_unknownError;
+                msg = strings.signup_unknownError;
         }
         return (
             <div className="container signup_form">
@@ -128,7 +132,7 @@ class SignupForm extends React.PureComponent<RCP, State> {
                             <Msg
                                 code={this.state.status}
                                 matchCode={Status.FAILED}
-                                message={`${strings.signup_failMsg}: ${message}`}
+                                message={`${strings.signup_failMsg}: ${msg}`}
                             />
                             <Msg
                                 code={this.state.status}
