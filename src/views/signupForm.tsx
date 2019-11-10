@@ -1,5 +1,6 @@
 import React from "react";
 import { RouteComponentProps as RCP } from "react-router-dom";
+import { AxiosError, AxiosResponse } from "axios";
 
 import req from "../axios";
 
@@ -12,10 +13,15 @@ enum Status {
     SUCCESS,
     UNDEFINED,
 }
+enum Errors {
+    FORBIDDEN = 403,
+    USER_EXISTS = 409,
+}
 interface State {
     name: string;
     password: string;
     status: Status;
+    httpCode: number;
 }
 
 class SignupForm extends React.PureComponent<RCP, State> {
@@ -23,6 +29,7 @@ class SignupForm extends React.PureComponent<RCP, State> {
         name: "",
         password: "",
         status: Status.UNDEFINED,
+        httpCode: 0,
     };
     componentDidUpdate = () => {
         if (this.state.status === Status.SUCCESS) {
@@ -39,7 +46,10 @@ class SignupForm extends React.PureComponent<RCP, State> {
         })
         .then(
             () => this.setState({ status: Status.SUCCESS }),
-            () => this.setState({ status: Status.FAILED })
+            (e: AxiosError) => this.setState({
+                status: Status.FAILED,
+                httpCode: (e.response as AxiosResponse).status
+            })
         );
     };
     goBack = () => this.props.history.push("/");
@@ -48,6 +58,15 @@ class SignupForm extends React.PureComponent<RCP, State> {
     updatePassword = (e: React.FormEvent<HTMLInputElement>) =>
         this.setState({ password: e.currentTarget.value });
     render = () => {
+        let message: string;
+        switch (this.state.httpCode) {
+            case Errors.FORBIDDEN:
+                message = strings.signup_disabled;
+            case Errors.USER_EXISTS:
+                message = strings.signup_userExists;
+            default:
+                message = strings.signup_unknownError;
+        }
         return (
             <div className="container signup_form">
                 <form className="signupForm">
@@ -86,6 +105,16 @@ class SignupForm extends React.PureComponent<RCP, State> {
                                     onClick={this.signup}
                                 />
                             </div>
+                        </div>
+                        <div className="level-item">
+                            <span
+                                style={{
+                                    display:
+                                        this.state.status === Status.FAILED
+                                            ? "block"
+                                            : "none",
+                                }}
+                            >{`${strings.signup_msg}: ${message}`}</span>
                         </div>
                         <div className="level-item level-right">
                             <div className="control">
