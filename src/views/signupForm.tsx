@@ -9,9 +9,10 @@ import strings from "./assets/locales";
 import "./styles/signupForm.scss";
 
 enum Status {
+    UNDEFINED,
     FAILED,
     SUCCESS,
-    UNDEFINED,
+    IN_PROCESS,
 }
 enum Errors {
     FORBIDDEN = 403,
@@ -23,6 +24,22 @@ interface State {
     status: Status;
     httpCode: number;
 }
+
+interface MsgProps {
+    message: string;
+    code: Status;
+    matchCode: Status;
+}
+/**
+ * Used for displaying messages on matching status code.
+ */
+const Msg: React.FC<MsgProps> = (props) => (
+    <span
+        style={{ display: props.code === props.matchCode ? "block" : "none" }}
+    >
+        {props.message}
+    </span>
+);
 
 class SignupForm extends React.PureComponent<RCP, State> {
     state = {
@@ -39,6 +56,7 @@ class SignupForm extends React.PureComponent<RCP, State> {
         }
     };
     signup = () => {
+        this.setState({ status: Status.IN_PROCESS });
         // prettier-ignore
         req.post("/signup", {
             name: this.state.name,
@@ -107,14 +125,21 @@ class SignupForm extends React.PureComponent<RCP, State> {
                             </div>
                         </div>
                         <div className="level-item">
-                            <span
-                                style={{
-                                    display:
-                                        this.state.status === Status.FAILED
-                                            ? "block"
-                                            : "none",
-                                }}
-                            >{`${strings.signup_msg}: ${message}`}</span>
+                            <Msg
+                                code={this.state.status}
+                                matchCode={Status.FAILED}
+                                message={`${strings.signup_failMsg}: ${message}`}
+                            />
+                            <Msg
+                                code={this.state.status}
+                                matchCode={Status.IN_PROCESS}
+                                message={strings.signup_processMsg}
+                            />
+                            <Msg
+                                code={this.state.status}
+                                matchCode={Status.SUCCESS}
+                                message={strings.signup_successMsg}
+                            />
                         </div>
                         <div className="level-item level-right">
                             <div className="control">
