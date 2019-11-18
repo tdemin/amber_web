@@ -3,6 +3,11 @@ import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 
+import { Button } from "./components/bulma/button";
+import { Input } from "./components/bulma/input";
+import { Control } from "./components/bulma/control";
+import { Field } from "./components/bulma/field";
+
 import { login } from "../actions/auth";
 import { AuthAction } from "../typings/actions";
 import { Store } from "../typings/store";
@@ -51,22 +56,13 @@ class LoginForm extends React.PureComponent<Props, State> {
                 <div className="field">
                     <label className="label">{strings.login_userNameTp}</label>
                     <div className="control">
-                        <input
-                            className="input"
-                            type="text"
-                            autoFocus
-                            onChange={this.updateUserName}
-                        />
+                        <Input autoFocus onChange={this.updateUserName} />
                     </div>
                 </div>
                 <div className="field">
                     <label className="label">{strings.login_passwordTp}</label>
                     <div className="control">
-                        <input
-                            className="input"
-                            type="password"
-                            onChange={this.updatePassword}
-                        />
+                        <Input password onChange={this.updatePassword} />
                     </div>
                 </div>
                 <span
