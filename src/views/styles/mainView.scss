@@ -4,8 +4,10 @@ div.searchBox {
     margin: $spacing;
 }
 
-div.app_footer {
-    margin-top: $spacing * 4;
+.headerButtons {
+    .level-item > input {
+        width: 100% !important;
+    }
 }
 
 @media (max-width: 600px) {
