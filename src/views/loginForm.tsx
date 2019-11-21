@@ -3,10 +3,13 @@ import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 
-import { Button } from "./components/bulma/button";
-import { Input } from "./components/bulma/input";
-import { Control } from "./components/bulma/control";
-import { Field } from "./components/bulma/field";
+import Container from "./components/bulma/container";
+import Button from "./components/bulma/button";
+import Input from "./components/bulma/input";
+import Control from "./components/bulma/control";
+import Field from "./components/bulma/field";
+import Level from "./components/bulma/level";
+import Message from "./components/message";
 
 import { login } from "../actions/auth";
 import { AuthAction } from "../typings/actions";
@@ -51,52 +54,38 @@ class LoginForm extends React.PureComponent<Props, State> {
         if (event.key === "Enter") this.login();
     };
     render = () => (
-        <div className="container login_view">
-            <form className="loginForm" onKeyPress={this.onKeyPress}>
-                <div className="field">
-                    <label className="label">{strings.login_userNameTp}</label>
-                    <div className="control">
-                        <Input autoFocus onChange={this.updateUserName} />
-                    </div>
-                </div>
-                <div className="field">
-                    <label className="label">{strings.login_passwordTp}</label>
-                    <div className="control">
-                        <Input password onChange={this.updatePassword} />
-                    </div>
-                </div>
-                <span
-                    className="wrongPassTooltip"
-                    style={{
-                        display: this.state.loginFailed ? "block" : "none",
-                    }}
-                >
-                    {strings.login_wrongPassTp}
-                </span>
-                <div className="level is-mobile">
-                    <div className="level-item level-left">
-                        <div className="control">
-                            <input
-                                type="button"
-                                className="button"
-                                value={strings.login_loginBtn}
+        <Container onKeyPress={this.onKeyPress}>
+            <form className="loginForm">
+                <Field label={strings.login_userNameTp}>
+                    <Input autoFocus onChange={this.updateUserName} />
+                </Field>
+                <Field label={strings.login_passwordTp}>
+                    <Input password onChange={this.updatePassword} />
+                </Field>
+                <Message
+                    condition={this.state.loginFailed}
+                    message={strings.login_wrongPassTp}
+                />
+                <Level level isMobile>
+                    <Level levelItem levelLeft>
+                        <Control>
+                            <Button
                                 onClick={this.login}
+                                value={strings.login_loginBtn}
                             />
-                        </div>
-                    </div>
-                    <div className="level-item level-right">
-                        <div className="control">
-                            <input
-                                type="button"
-                                className="button"
+                        </Control>
+                    </Level>
+                    <Level levelItem levelRight>
+                        <Control>
+                            <Button
                                 onClick={this.toSignup}
                                 value={strings.login_signupBtn}
                             />
-                        </div>
-                    </div>
-                </div>
+                        </Control>
+                    </Level>
+                </Level>
             </form>
-        </div>
+        </Container>
     );
 }
 
