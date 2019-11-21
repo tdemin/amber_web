@@ -15,7 +15,6 @@ import Message from "./components/message";
 import strings from "./assets/locales";
 
 import "./styles/signupForm.scss";
-import { string } from "prop-types";
 
 enum Status {
     UNDEFINED,

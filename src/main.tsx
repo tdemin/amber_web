@@ -46,30 +46,20 @@ class App extends React.Component<Props, Props> {
         const token = this.state.token as string;
         const loggedIn = token.length !== 0;
         return (
-            <div className="app">
-                <Router>
-                    {!loggedIn && (
-                        <Switch>
-                            <Route
-                                path="/signup"
-                                exact
-                                component={SignupForm}
-                            />
-                            <Route path="/" exact component={LoginForm} />
-                        </Switch>
-                    )}
-                    {loggedIn && (
-                        <Switch>
-                            <Route path="/" exact component={MainView} />
-                            <Route
-                                path="/task/:id"
-                                exact
-                                component={EditorView}
-                            />
-                        </Switch>
-                    )}
-                </Router>
-            </div>
+            <Router>
+                {!loggedIn && (
+                    <Switch>
+                        <Route path="/signup" exact component={SignupForm} />
+                        <Route path="/" exact component={LoginForm} />
+                    </Switch>
+                )}
+                {loggedIn && (
+                    <Switch>
+                        <Route path="/" exact component={MainView} />
+                        <Route path="/task/:id" exact component={EditorView} />
+                    </Switch>
+                )}
+            </Router>
         );
     };
 }

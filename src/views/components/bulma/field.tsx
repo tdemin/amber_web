@@ -8,7 +8,7 @@ import { BulmaFieldProps } from "../../../typings/bulma";
 export const Field: FC<HTMLAttributes<HTMLDivElement> & BulmaFieldProps> = (
     props
 ) => (
-    <div className={"field ".concat(props.className as string)} {...props}>
+    <div {...props} className={"field ".concat(props.className as string)}>
         <label className="label">{props.label}</label>
         <Control>{props.control ? props.control : props.children}</Control>
     </div>

@@ -12,7 +12,7 @@ export const Level: React.FC<HTMLAttributes<HTMLDivElement> & BP> = (props) => {
     if (props.levelRight) classes.push("level-right");
     if (props.isMobile) classes.push("is-mobile");
     return (
-        <div className={`${classes.join(" ")} ${props.className}`} {...props}>
+        <div {...props} className={`${classes.join(" ")} ${props.className}`}>
             {props.children}
         </div>
     );

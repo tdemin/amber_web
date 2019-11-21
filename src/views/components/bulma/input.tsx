@@ -10,9 +10,9 @@ export const Input: React.FC<InputHTMLAttributes<HTMLInputElement> & Props> = (
     props
 ) => (
     <input
+        {...(props as InputHTMLAttributes<HTMLInputElement>)}
         type={props.password ? "password" : "text"}
         className={"input ".concat(props.className as string)}
-        {...(props as InputHTMLAttributes<HTMLInputElement>)}
     >
         {props.children}
     </input>
