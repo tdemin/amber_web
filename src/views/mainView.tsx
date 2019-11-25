@@ -50,9 +50,9 @@ class MainView extends React.Component<Props, State> {
         );
         danglingTasks.forEach((task) => this.props.dispatch(deleteTask(task)));
     };
-    updateSearch = (event: React.FormEvent<HTMLInputElement>) =>
+    updateSearch = (e: React.FormEvent<HTMLInputElement>) =>
         this.setState({
-            search: event.currentTarget.value,
+            search: e.currentTarget.value,
         });
     toNewTask = () => this.props.history.push("/task/new");
     componentDidMount = () => {
@@ -69,22 +69,22 @@ class MainView extends React.Component<Props, State> {
             });
         }
     };
-    handleHotkeys = (event: KeyboardEvent) => {
+    handleHotkeys = (e: KeyboardEvent) => {
+        const escCode = 27;
         const search = document.getElementById("searchInput");
         const searchFocused = document.activeElement === search;
-        if ((event.ctrlKey || event.metaKey) && event.key === "f") {
-            event.preventDefault();
+        if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+            e.preventDefault();
             (search as HTMLElement).focus();
-        } else if (event.key === "n" && !searchFocused) {
-            event.preventDefault();
+        } else if (e.key === "n" && !searchFocused) {
+            e.preventDefault();
             this.toNewTask();
-        } else if (event.key === "u" && !searchFocused) {
-            event.preventDefault();
+        } else if (e.key === "u" && !searchFocused) {
+            e.preventDefault();
             this.refetch();
-        } else if (event.keyCode === 27 && searchFocused) {
-            // unfocus search on Esc press
+        } else if (e.keyCode === escCode && searchFocused) {
             (document.activeElement as HTMLElement).blur();
-            event.preventDefault();
+            e.preventDefault();
             this.setState({
                 search: "",
             });

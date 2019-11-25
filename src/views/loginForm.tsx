@@ -40,8 +40,9 @@ class LoginForm extends React.PureComponent<Props, State> {
         loginFailed: this.props.loginFailed,
     } as State;
     componentDidUpdate = (prevProps: Props) => {
-        if (prevProps.loginFailed !== this.props.loginFailed)
+        if (prevProps.loginFailed !== this.props.loginFailed) {
             this.setState({ loginFailed: this.props.loginFailed as boolean });
+        }
     };
     updateUserName = (event: React.FormEvent<HTMLInputElement>) =>
         this.setState({ username: event.currentTarget.value });
@@ -51,7 +52,7 @@ class LoginForm extends React.PureComponent<Props, State> {
         this.props.dispatch(login(this.state.username, this.state.password));
     toSignup = () => this.props.history.push("/signup");
     onKeyPress = (event: React.KeyboardEvent<HTMLElement>) => {
-        if (event.key === "Enter") this.login();
+        event.key === "Enter" && this.login();
     };
     render = () => (
         <Container onKeyPress={this.onKeyPress}>

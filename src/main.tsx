@@ -26,8 +26,11 @@ class App extends React.Component<Props, Props> {
         username: this.props.username,
     } as Props;
     updateToken = () => {
-        if (this.props.token) setToken(this.props.token as string);
-        else resetToken();
+        if (this.props.token) {
+            setToken(this.props.token as string);
+        } else {
+            resetToken();
+        }
     };
     UNSAFE_componentWillMount = () => this.updateToken();
     componentDidUpdate = (prevProps: Props) => {

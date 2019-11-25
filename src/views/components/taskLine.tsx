@@ -38,16 +38,13 @@ class TaskLine extends React.Component<Props, State> {
     render = () => {
         const { ID, Completed, ToRemove, Text } = this.state.task;
         let classNames: string[] = ["taskLine", "level", "is-mobile"];
-        if (Completed) classNames.push("taskCompleted");
-        if (ToRemove) classNames.push("taskToRemove");
+        Completed && classNames.push("taskCompleted");
+        ToRemove && classNames.push("taskToRemove");
         return (
             <div className={classNames.join(" ")}>
                 <div className="taskText level-item level-left">
                     <Link to={`/task/${ID}`}>
-                        <span className="taskID">
-                            #{ID}
-                            {" - "}
-                        </span>
+                        <span className="taskID">{`#${ID} - `}</span>
                         <span className="taskText">{Text}</span>
                     </Link>
                 </div>

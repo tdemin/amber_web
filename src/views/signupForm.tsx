@@ -16,6 +16,8 @@ import strings from "./assets/locales";
 
 import "./styles/signupForm.scss";
 
+const successRedirectDelay = 5000;
+
 enum Status {
     UNDEFINED,
     FAILED,
@@ -44,7 +46,7 @@ class SignupForm extends React.PureComponent<RCP, State> {
         if (this.state.status === Status.SUCCESS) {
             setTimeout(() => {
                 this.props.history.push("/");
-            }, 5000);
+            }, successRedirectDelay);
         }
     };
     signup = () => {

@@ -23,13 +23,13 @@ const mapStateToProps = (state: Store) => ({
     tasks: state.task.tasks,
 });
 
-interface Params {
-    id: string;
-}
+/** Used to delay navigation before we are finished with stuff. */
+const waitTimeout = 200;
+
 interface Props extends RouteComponentProps {
     tasks: Task[];
     dispatch: ThunkDispatch<any, any, TaskAction>;
-    match: Match<Params>;
+    match: Match<{ id: string }>;
 }
 interface State {
     task?: Task;
@@ -51,19 +51,16 @@ class EditorView extends React.Component<Props, State> {
         // editing or creating a new task?
         if (this.props.match.params.id !== "new") {
             const id = parseInt(this.props.match.params.id);
-            const task = this.props.tasks.find(
-                (task) => task.ID === id
-            ) as Task;
-            this.setState(() => ({
-                task: task,
+            const task = this.props.tasks.find((t) => t.ID === id) as Task;
+            this.setState({
+                task,
                 title: task.Text,
-            }));
+            });
         } else {
             // create a new task
             let maxID = 0;
-            this.props.tasks.forEach(
-                (task) => task.ID > maxID && (maxID = task.ID)
-            );
+            // find the biggest ID and use <maxID + 1>
+            this.props.tasks.forEach((t) => t.ID > maxID && (maxID = t.ID));
             const newID = maxID + 1;
             const newTask = {
                 ID: newID,
@@ -82,7 +79,8 @@ class EditorView extends React.Component<Props, State> {
     componentWillUnmount = () => {
         document.removeEventListener("keydown", this.handleHotkeys);
     };
-    handleHotkeys = (event: KeyboardEvent) => {
+    handleHotkeys = (e: KeyboardEvent) => {
+        const escCode = 27;
         const textInput = document.getElementById("taskTextInput");
         const parentSelect = document.getElementById("taskParentSelect");
         const statusBtn = document.getElementById("taskStatusButton");
@@ -90,20 +88,20 @@ class EditorView extends React.Component<Props, State> {
             document.activeElement === textInput ||
             document.activeElement === parentSelect ||
             document.activeElement === statusBtn;
-        if (event.key === "b" && !editFocused) {
-            event.preventDefault();
+        if (e.key === "b" && !editFocused) {
+            e.preventDefault();
             this.props.history.push("/");
-        } else if (event.key === "s" && !editFocused) {
-            event.preventDefault();
+        } else if (e.key === "s" && !editFocused) {
+            e.preventDefault();
             this.saveChanges();
-        } else if (event.key === "d" && !editFocused && !this.state.newTask) {
-            event.preventDefault();
+        } else if (e.key === "d" && !editFocused && !this.state.newTask) {
+            e.preventDefault();
             this.delete();
         } else if (
-            event.keyCode === 27 &&
+            e.keyCode === escCode &&
             document.activeElement === textInput
         ) {
-            event.preventDefault();
+            e.preventDefault();
             (textInput as HTMLElement).blur();
         }
     };
@@ -111,23 +109,23 @@ class EditorView extends React.Component<Props, State> {
         this.props.dispatch(deleteTask(this.state.task));
         setTimeout(() => {
             this.props.history.goBack();
-        }, 200);
+        }, waitTimeout);
     };
-    updateText = (event: React.FormEvent<HTMLInputElement>) => {
+    updateText = (e: React.FormEvent<HTMLInputElement>) => {
         const { task } = this.state;
-        task.Text = event.currentTarget.value;
-        this.setState(() => ({ task: task }));
+        task.Text = e.currentTarget.value;
+        this.setState(() => ({ task }));
     };
     updateStatus = () => {
         const { task } = this.state;
         task.Completed = !task.Completed;
-        this.setState(() => ({ task: task }));
+        this.setState(() => ({ task }));
     };
-    updateParent = (event: React.FormEvent<HTMLSelectElement>) => {
-        const newPID = parseInt(event.currentTarget.value);
+    updateParent = (e: React.FormEvent<HTMLSelectElement>) => {
+        const newPID = parseInt(e.currentTarget.value);
         const { task } = this.state;
         task.PID = newPID;
-        this.setState(() => ({ task: task }));
+        this.setState(() => ({ task }));
     };
     saveChanges = () => {
         if (this.state.newTask) {
@@ -139,7 +137,7 @@ class EditorView extends React.Component<Props, State> {
         // pushed stuff to the server
         setTimeout(() => {
             this.props.history.goBack();
-        }, 200);
+        }, waitTimeout);
     };
     render = () => {
         const { task, title } = this.state;
@@ -177,9 +175,7 @@ class EditorView extends React.Component<Props, State> {
                     </Level>
                 </Level>
                 <Level className="main">
-                    <span className="subtitle">
-                        #{task.ID} - {title}
-                    </span>
+                    <span className="subtitle">{`#${task.ID} - ${title}`}</span>
                     {/* another div, needed for border styling fixes */}
                     <Level className="fix">
                         <Level className="editor">
