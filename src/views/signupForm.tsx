@@ -4,9 +4,17 @@ import { AxiosError, AxiosResponse } from "axios";
 
 import req from "../axios";
 
+import Container from "./components/bulma/container";
+import Button from "./components/bulma/button";
+import Input from "./components/bulma/input";
+import Control from "./components/bulma/control";
+import Level from "./components/bulma/level";
+import Field from "./components/bulma/field";
+import Message from "./components/message";
+
 import strings from "./assets/locales";
 
-import "./styles/signupForm.scss";
+const successRedirectDelay = 5000;
 
 enum Status {
     UNDEFINED,
@@ -25,22 +33,6 @@ interface State {
     httpCode: number;
 }
 
-interface MsgProps {
-    message: string;
-    code: Status;
-    matchCode: Status;
-}
-/**
- * Used for displaying messages on matching status code.
- */
-const Msg: React.FC<MsgProps> = (props) => (
-    <span
-        style={{ display: props.code === props.matchCode ? "block" : "none" }}
-    >
-        {props.message}
-    </span>
-);
-
 class SignupForm extends React.PureComponent<RCP, State> {
     state = {
         name: "",
@@ -52,22 +44,19 @@ class SignupForm extends React.PureComponent<RCP, State> {
         if (this.state.status === Status.SUCCESS) {
             setTimeout(() => {
                 this.props.history.push("/");
-            }, 5000);
+            }, successRedirectDelay);
         }
     };
     signup = () => {
         this.setState({ status: Status.IN_PROCESS });
-        // prettier-ignore
-        req.post("/signup", {
-            name: this.state.name,
-            password: this.state.password,
-        })
-        .then(
+        let data = { name: this.state.name, password: this.state.password };
+        req.post("/signup", data).then(
             () => this.setState({ status: Status.SUCCESS }),
-            (e: AxiosError) => this.setState({
-                status: Status.FAILED,
-                httpCode: (e.response as AxiosResponse).status
-            })
+            (e: AxiosError) =>
+                this.setState({
+                    status: Status.FAILED,
+                    httpCode: (e.response as AxiosResponse).status,
+                })
         );
     };
     goBack = () => this.props.history.push("/");
@@ -76,84 +65,66 @@ class SignupForm extends React.PureComponent<RCP, State> {
     updatePassword = (e: React.FormEvent<HTMLInputElement>) =>
         this.setState({ password: e.currentTarget.value });
     render = () => {
-        let message: string;
+        let msg: string;
         switch (this.state.httpCode) {
             case Errors.FORBIDDEN:
-                message = strings.signup_disabled;
+                msg = strings.signup_disabled;
+                break;
             case Errors.USER_EXISTS:
-                message = strings.signup_userExists;
+                msg = strings.signup_userExists;
+                break;
             default:
-                message = strings.signup_unknownError;
+                msg = strings.signup_unknownError;
         }
         return (
-            <div className="container signup_form">
+            <Container>
                 <form className="signupForm">
-                    <div className="field">
-                        <label className="label">
-                            {strings.login_userNameTp}
-                        </label>
-                        <div className="control">
-                            <input
-                                type="text"
-                                autoFocus
-                                className="input"
-                                onChange={this.updateName}
-                            />
-                        </div>
-                    </div>
-                    <div className="field">
-                        <label className="label">
-                            {strings.login_passwordTp}
-                        </label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="password"
-                                onChange={this.updatePassword}
-                            />
-                        </div>
-                    </div>
-                    <div className="level is-mobile">
-                        <div className="level-item level-left">
-                            <div className="control">
-                                <input
-                                    type="button"
-                                    className="button"
+                    <Field
+                        label={strings.login_userNameTp}
+                        control={<Input autoFocus onChange={this.updateName} />}
+                    />
+                    <Field
+                        label={strings.login_passwordTp}
+                        control={
+                            <Input password onChange={this.updatePassword} />
+                        }
+                    />
+                    <Level level isMobile>
+                        <Level levelItem levelLeft>
+                            <Control>
+                                <Button
                                     value={strings.login_signupBtn}
                                     onClick={this.signup}
                                 />
-                            </div>
-                        </div>
-                        <div className="level-item">
-                            <Msg
-                                code={this.state.status}
-                                matchCode={Status.FAILED}
-                                message={`${strings.signup_failMsg}: ${message}`}
+                            </Control>
+                        </Level>
+                        <Level levelItem>
+                            <Message
+                                condition={this.state.status === Status.FAILED}
+                                message={`${strings.signup_failMsg}: ${msg}`}
                             />
-                            <Msg
-                                code={this.state.status}
-                                matchCode={Status.IN_PROCESS}
+                            <Message
+                                condition={
+                                    this.state.status === Status.IN_PROCESS
+                                }
                                 message={strings.signup_processMsg}
                             />
-                            <Msg
-                                code={this.state.status}
-                                matchCode={Status.SUCCESS}
+                            <Message
+                                condition={this.state.status === Status.SUCCESS}
                                 message={strings.signup_successMsg}
                             />
-                        </div>
-                        <div className="level-item level-right">
-                            <div className="control">
-                                <input
-                                    type="button"
-                                    className="button"
+                        </Level>
+                        <Level levelItem levelRight>
+                            <Control>
+                                <Button
                                     value={strings.login_goBackBtn}
                                     onClick={this.goBack}
                                 />
-                            </div>
-                        </div>
-                    </div>
+                            </Control>
+                        </Level>
+                    </Level>
                 </form>
-            </div>
+            </Container>
         );
     };
 }

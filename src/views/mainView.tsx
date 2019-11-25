@@ -3,9 +3,14 @@ import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 
+import Container from "./components/bulma/container";
+import Button from "./components/bulma/button";
+import Input from "./components/bulma/input";
+import Control from "./components/bulma/control";
+import Level from "./components/bulma/level";
 import TaskList from "./components/taskList";
+import Footer from "./components/footer";
 
-import { appHomePage } from "../const";
 import { logout } from "../actions/auth";
 import { refetchTasks, deleteTask } from "../actions/tasks";
 import { AnyAction } from "../typings/actions";
@@ -13,8 +18,6 @@ import { Task } from "../typings/tasks";
 import { Store } from "../typings/store";
 
 import strings from "./assets/locales";
-
-import "./styles/mainView.scss";
 
 const mapStateToProps = (state: Store) => ({
     tasks: state.task.tasks,
@@ -45,9 +48,9 @@ class MainView extends React.Component<Props, State> {
         );
         danglingTasks.forEach((task) => this.props.dispatch(deleteTask(task)));
     };
-    updateSearch = (event: React.FormEvent<HTMLInputElement>) =>
+    updateSearch = (e: React.FormEvent<HTMLInputElement>) =>
         this.setState({
-            search: event.currentTarget.value,
+            search: e.currentTarget.value,
         });
     toNewTask = () => this.props.history.push("/task/new");
     componentDidMount = () => {
@@ -64,22 +67,22 @@ class MainView extends React.Component<Props, State> {
             });
         }
     };
-    handleHotkeys = (event: KeyboardEvent) => {
+    handleHotkeys = (e: KeyboardEvent) => {
+        const escCode = 27;
         const search = document.getElementById("searchInput");
         const searchFocused = document.activeElement === search;
-        if ((event.ctrlKey || event.metaKey) && event.key === "f") {
-            event.preventDefault();
+        if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+            e.preventDefault();
             (search as HTMLElement).focus();
-        } else if (event.key === "n" && !searchFocused) {
-            event.preventDefault();
+        } else if (e.key === "n" && !searchFocused) {
+            e.preventDefault();
             this.toNewTask();
-        } else if (event.key === "u" && !searchFocused) {
-            event.preventDefault();
+        } else if (e.key === "u" && !searchFocused) {
+            e.preventDefault();
             this.refetch();
-        } else if (event.keyCode === 27 && searchFocused) {
-            // unfocus search on Esc press
+        } else if (e.keyCode === escCode && searchFocused) {
             (document.activeElement as HTMLElement).blur();
-            event.preventDefault();
+            e.preventDefault();
             this.setState({
                 search: "",
             });
@@ -89,61 +92,56 @@ class MainView extends React.Component<Props, State> {
         const { username } = this.props;
         const { tasks, search } = this.state;
         return (
-            <div className="container list_view">
-                <div className="navbar level">
-                    <div className="headerText level-left level-item">
+            <Container>
+                <Level level className="navbar">
+                    <Level levelItem levelLeft className="headerText">
                         {`${strings.main_loggedInMsg} ${username}`}
-                    </div>
-                    {/* eslint-disable-next-line max-len */}
-                    <div className="headerButtons level-right level-item level is-mobile">
-                        <input
-                            type="button"
-                            className="addBtn button level-item"
-                            value={strings.btns_addTask}
-                            onClick={this.toNewTask}
-                        />
-                        <input
-                            type="button"
-                            className="refetchBtn button level-item"
-                            onClick={this.refetch}
-                            value={strings.btns_refetch}
-                        />
-                        <input
-                            type="button"
-                            className="pruneBtn button level-item"
-                            onClick={this.prune}
-                            value={strings.btns_pruneTasks}
-                        />
-                        <input
-                            type="button"
-                            className="logoutBtn button level-item"
-                            onClick={this.logout}
-                            value={strings.main_logoutBtn}
-                        />
-                    </div>
-                </div>
-                <div className="container">
-                    <div className="field searchBox">
-                        <div className="control">
-                            <input
-                                type="text"
-                                className="input"
-                                id="searchInput"
-                                placeholder={strings.main_searchTp}
-                                onChange={this.updateSearch}
+                    </Level>
+                    <Level
+                        level
+                        levelItem
+                        levelRight
+                        isMobile
+                        className="headerButtons"
+                    >
+                        <Level levelItem>
+                            <Button
+                                value={strings.btns_addTask}
+                                onClick={this.toNewTask}
                             />
-                        </div>
-                    </div>
+                        </Level>
+                        <Level levelItem>
+                            <Button
+                                value={strings.btns_refetch}
+                                onClick={this.refetch}
+                            />
+                        </Level>
+                        <Level levelItem>
+                            <Button
+                                value={strings.btns_pruneTasks}
+                                onClick={this.prune}
+                            />
+                        </Level>
+                        <Level levelItem>
+                            <Button
+                                onClick={this.logout}
+                                value={strings.main_logoutBtn}
+                            />
+                        </Level>
+                    </Level>
+                </Level>
+                <Container>
+                    <Control className="searchBox">
+                        <Input
+                            id="searchInput"
+                            placeholder={strings.main_searchTp}
+                            onChange={this.updateSearch}
+                        />
+                    </Control>
                     <TaskList tasks={tasks} search={search}></TaskList>
-                </div>
-                <div className="app_footer">
-                    <div className="level">
-                        <a className="level-item text link" href={appHomePage}>
-                            {strings.app_versionString}
-                        </a>
-                    </div>
-                </div>
-            </div>
+                </Container>
+                <Footer />
+            </Container>
         );
     };
 }

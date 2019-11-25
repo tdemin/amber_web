@@ -1,28 +1,170 @@
-@import "./const.scss";
+// === Constants ===
+
+$spacing: 2px;
+$borderColor: #959595;
+$fontSize: 12pt;
+
+// screen sizes, etc
+$small: 600px;
+$formWidth: 320px;
+
+// === Imports ===
 
 @import "bulma/bulma.sass";
+
+// === Rules ===
+
+// --- Common stuff ---
 
 div#root {
     margin: $spacing * 2 $spacing;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 12pt;
+    font-size: $fontSize;
 }
 
 div.container {
-    max-width: 720px;
+    max-width: $small * 1.2;
 }
 
-@media (min-width: 601px) {
+@media (min-width: $small + 1px) {
     div#root {
         margin-top: $spacing * 16 !important;
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: $small) {
     div.container {
         margin: 0 $spacing;
     }
     div.navbar {
         margin-bottom: $spacing * 2 !important;
+    }
+}
+
+// --- Components ---
+
+.link {
+    text-decoration: none;
+    color: inherit;
+}
+
+// --- Auth forms ---
+
+form.loginForm,
+form.signupForm {
+    max-width: $formWidth;
+}
+
+// --- Main view ---
+
+div.searchBox {
+    margin: $spacing;
+}
+
+.headerButtons {
+    .level-item > input {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: $small) {
+    div.headerText {
+        display: none;
+    }
+    div.headerButtons {
+        margin: 0 $spacing;
+    }
+}
+
+// --- Editor ---
+
+.navbar .headerRight {
+    // setting max-width here prevents the right side of the navbar
+    // from being stretched
+    max-width: $spacing * 12;
+}
+
+@media (max-width: $small) {
+    .editor_view {
+        margin: 0 $spacing * 2 !important;
+    }
+    .navbar {
+        margin-top: $spacing * 8;
+    }
+}
+
+div.main {
+    margin: $spacing;
+    .subtitle {
+        font-weight: bolder;
+    }
+    .fix {
+        border-top: $spacing / 4 solid $borderColor;
+        margin-top: $spacing;
+    }
+    .editor {
+        margin-top: $spacing * 2;
+        max-width: $formWidth;
+    }
+}
+
+// --- Task list ---
+
+div.taskList {
+    margin: 0 $spacing;
+    div.taskSubtree {
+        margin-left: $spacing * 8;
+        div.taskLine {
+            border: 1px solid $borderColor;
+            border-radius: 3px;
+            margin: $spacing * 3 0;
+            padding: $spacing * 3;
+            &.taskCompleted {
+                .taskText {
+                    text-decoration: line-through;
+                }
+                background: darken(#ffffff, 20%);
+            }
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            div.taskText {
+                flex-grow: 4;
+                // solves the problem with fitting text into the containers
+                width: min-content;
+                a {
+                    flex: 1;
+                }
+            }
+        }
+    }
+    /* do not indent top-level tasks */
+    & > div.taskSubtree {
+        margin-left: 0 !important;
+    }
+    .taskToRemove {
+        display: none !important;
+    }
+}
+
+@media (min-width: $small + 1px) {
+    div.taskLine {
+        margin: $spacing * 4 0 !important;
+        padding: $spacing * 4 !important;
+    }
+}
+
+@media (max-width: $small) {
+    div.taskList {
+        div.taskSubtree {
+            margin-left: $spacing * 8 !important;
+        }
+        /* do not indent top-level tasks */
+        & > div.taskSubtree {
+            margin-left: 0 !important;
+        }
+        .taskID {
+            display: none !important;
+        }
     }
 }

@@ -9,7 +9,7 @@ export const taskFromRecord = (task: TaskRecord): Task => {
     newTask.ID = task.id as number;
     newTask.PID = "parent_id" in task ? (task.parent_id as number) : 0;
     newTask.Text = "text" in task ? (task.text as string) : "";
-    newTask.Completed = task.status !== 0 ? true : false;
+    newTask.Completed = task.status !== 0;
     newTask.LastMod = task.last_mod as number;
     return newTask;
 };
@@ -60,8 +60,12 @@ export const mergeTasks = (
             if (local.LastMod > remote.LastMod) {
                 result.push(local);
                 toUpdate.push(local);
-            } else result.push(remote);
-            if (local.ToRemove) toDelete.push(local);
+            } else {
+                result.push(remote);
+            }
+            if (local.ToRemove) {
+                toDelete.push(local);
+            }
         } else {
             // matching local task not found, adding a new task to the store
             result.push(remote);
@@ -80,19 +84,19 @@ export const mergeTasks = (
                 } else {
                     result.push(remote);
                 }
-                if (local.ToRemove) toDelete.push(local);
-            } else {
-                if (local.ToSync) {
-                    result.push(local);
-                    toSync.push(local);
+                if (local.ToRemove) {
+                    toDelete.push(local);
                 }
+            } else if (local.ToSync) {
+                result.push(local);
+                toSync.push(local);
             }
         }
     });
     return {
-        result: result,
-        toDelete: toDelete,
-        toSync: toSync,
-        toUpdate: toUpdate,
+        result,
+        toDelete,
+        toSync,
+        toUpdate,
     };
 };

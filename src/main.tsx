@@ -11,6 +11,8 @@ import EditorView from "./views/editorView";
 
 import { setToken, resetToken } from "./actions/auth";
 
+import "./views/styles/common.scss";
+
 const mapStateToProps = (state: Store) => ({
     token: state.auth.token,
     username: state.auth.username,
@@ -26,8 +28,11 @@ class App extends React.Component<Props, Props> {
         username: this.props.username,
     } as Props;
     updateToken = () => {
-        if (this.props.token) setToken(this.props.token as string);
-        else resetToken();
+        if (this.props.token) {
+            setToken(this.props.token as string);
+        } else {
+            resetToken();
+        }
     };
     UNSAFE_componentWillMount = () => this.updateToken();
     componentDidUpdate = (prevProps: Props) => {
@@ -46,30 +51,20 @@ class App extends React.Component<Props, Props> {
         const token = this.state.token as string;
         const loggedIn = token.length !== 0;
         return (
-            <div className="app">
-                <Router>
-                    {!loggedIn && (
-                        <Switch>
-                            <Route
-                                path="/signup"
-                                exact
-                                component={SignupForm}
-                            />
-                            <Route path="/" exact component={LoginForm} />
-                        </Switch>
-                    )}
-                    {loggedIn && (
-                        <Switch>
-                            <Route path="/" exact component={MainView} />
-                            <Route
-                                path="/task/:id"
-                                exact
-                                component={EditorView}
-                            />
-                        </Switch>
-                    )}
-                </Router>
-            </div>
+            <Router>
+                {!loggedIn && (
+                    <Switch>
+                        <Route path="/signup" exact component={SignupForm} />
+                        <Route path="/" exact component={LoginForm} />
+                    </Switch>
+                )}
+                {loggedIn && (
+                    <Switch>
+                        <Route path="/" exact component={MainView} />
+                        <Route path="/task/:id" exact component={EditorView} />
+                    </Switch>
+                )}
+            </Router>
         );
     };
 }

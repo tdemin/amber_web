@@ -2,6 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 
+import Level from "../components/bulma/level";
+import Button from "../components/bulma/button";
 import Link from "../components/link";
 
 import { TaskAction } from "../../typings/actions";
@@ -37,24 +39,19 @@ class TaskLine extends React.Component<Props, State> {
     };
     render = () => {
         const { ID, Completed, ToRemove, Text } = this.state.task;
-        let classNames: string[] = ["taskLine", "level", "is-mobile"];
-        if (Completed) classNames.push("taskCompleted");
-        if (ToRemove) classNames.push("taskToRemove");
+        let classNames: string[] = ["taskLine"];
+        Completed && classNames.push("taskCompleted");
+        ToRemove && classNames.push("taskToRemove");
         return (
-            <div className={classNames.join(" ")}>
-                <div className="taskText level-item level-left">
+            <Level level isMobile className={classNames.join(" ")}>
+                <Level levelItem levelLeft className="taskText">
                     <Link to={`/task/${ID}`}>
-                        <span className="taskID">
-                            #{ID}
-                            {" - "}
-                        </span>
+                        <span className="taskID">{`#${ID} - `}</span>
                         <span className="taskText">{Text}</span>
                     </Link>
-                </div>
-                <div className="level-item level-right">
-                    <input
-                        type="button"
-                        className="button"
+                </Level>
+                <Level levelItem levelRight>
+                    <Button
                         value={
                             Completed
                                 ? strings.task_toggleBtnCompleted
@@ -62,8 +59,8 @@ class TaskLine extends React.Component<Props, State> {
                         }
                         onClick={this.toggleTask}
                     />
-                </div>
-            </div>
+                </Level>
+            </Level>
         );
     };
 }

@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 // Boilerplate SW added by create-react-app.
 
 const isLocalhost = Boolean(
