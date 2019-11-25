@@ -3,10 +3,14 @@ import { ThunkDispatch } from "redux-thunk";
 import { match as Match, RouteComponentProps } from "react-router";
 import { connect } from "react-redux";
 
+import Container from "./components/bulma/container";
+import Button from "./components/bulma/button";
+import Input from "./components/bulma/input";
+import Field from "./components/bulma/field";
+import Level from "./components/bulma/level";
 import TaskSelect from "./components/taskSelect";
 
 import { deleteTask, updateTask, createTask } from "../actions/tasks";
-
 import { TaskAction } from "../typings/actions";
 import { Task } from "../typings/tasks";
 import { Store } from "../typings/store";
@@ -140,50 +144,50 @@ class EditorView extends React.Component<Props, State> {
     render = () => {
         const { task, title } = this.state;
         return (
-            <div className="container editor_view">
-                <div className="navbar level is-mobile">
-                    <div className="headerLeft level-left level-item">
-                        <input
-                            type="button"
-                            className="button"
-                            onClick={this.props.history.goBack}
+            <Container className="editor_view">
+                <Level className="navbar" level isMobile>
+                    <Level className="headerLeft" levelLeft levelItem>
+                        <Button
                             value={strings.btns_goBack}
+                            onClick={this.props.history.goBack}
                         />
-                    </div>
-                    {/* eslint-disable-next-line max-len */}
-                    <div className="headerRight level-right level-item level is-mobile">
-                        <input
-                            type="button"
-                            className="button level-item"
-                            value={strings.btns_updateTask}
-                            onClick={this.saveChanges}
-                        />
-                        <input
-                            type="button"
-                            className="button level-item"
-                            value={strings.btns_deleteTask}
-                            onClick={this.delete}
-                            // we can't delete a task we haven't created yet
-                            disabled={this.state.newTask}
-                        />
-                    </div>
-                </div>
-                <div className="main">
+                    </Level>
+                    <Level
+                        className="headerRight"
+                        levelRight
+                        levelItem
+                        level
+                        isMobile
+                    >
+                        <Level levelItem>
+                            <Button
+                                className="level-item"
+                                value={strings.btns_updateTask}
+                                onClick={this.saveChanges}
+                            />
+                        </Level>
+                        <Level levelItem>
+                            <Button
+                                className="level-item"
+                                value={strings.btns_deleteTask}
+                                onClick={this.delete}
+                                disabled={this.state.newTask}
+                            />
+                        </Level>
+                    </Level>
+                </Level>
+                <Level className="main">
                     <span className="subtitle">
                         #{task.ID} - {title}
                     </span>
                     {/* another div, needed for border styling fixes */}
-                    <div className="fix">
-                        <div className="editor">
-                            <div className="field">
-                                <label className="label">
-                                    {strings.editor_statusTp}
-                                </label>
-                                <div className="control">
-                                    <input
+                    <Level className="fix">
+                        <Level className="editor">
+                            <Field
+                                label={strings.editor_statusTp}
+                                control={
+                                    <Button
                                         id="taskStatusButton"
-                                        className="button"
-                                        type="button"
                                         value={
                                             task.Completed
                                                 ? strings.editor_completedTp
@@ -191,42 +195,34 @@ class EditorView extends React.Component<Props, State> {
                                         }
                                         onClick={this.updateStatus}
                                     />
-                                </div>
-                            </div>
-                            <div className="field">
-                                <label className="label">
-                                    {strings.editor_textTp}
-                                </label>
-                                <div className="control">
-                                    <input
+                                }
+                            />
+                            <Field
+                                label={strings.editor_textTp}
+                                control={
+                                    <Input
                                         id="taskTextInput"
-                                        className="input"
-                                        type="text"
                                         autoFocus
                                         onChange={this.updateText}
                                         value={task.Text}
                                     />
-                                </div>
-                            </div>
-                            <div className="field">
-                                <label className="label">
-                                    {strings.editor_parentTp}
-                                </label>
-                                <div className="control">
-                                    <div className="select">
-                                        <TaskSelect
-                                            id="taskParentSelect"
-                                            current={task}
-                                            initialValue={task.PID}
-                                            onChange={this.updateParent}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                }
+                            />
+                            <Field
+                                label={strings.editor_parentTp}
+                                control={
+                                    <TaskSelect
+                                        id="taskParentSelect"
+                                        current={task}
+                                        initialValue={task.PID}
+                                        onChange={this.updateParent}
+                                    />
+                                }
+                            />
+                        </Level>
+                    </Level>
+                </Level>
+            </Container>
         );
     };
 }
