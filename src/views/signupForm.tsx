@@ -14,8 +14,6 @@ import Message from "./components/message";
 
 import strings from "./assets/locales";
 
-import "./styles/signupForm.scss";
-
 const successRedirectDelay = 5000;
 
 enum Status {

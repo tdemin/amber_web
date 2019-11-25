@@ -17,8 +17,6 @@ import { Store } from "../typings/store";
 
 import strings from "./assets/locales";
 
-import "./styles/loginForm.scss";
-
 const mapStateToProps = (state: Store) => ({
     loginFailed: state.auth.loginFailed,
 });

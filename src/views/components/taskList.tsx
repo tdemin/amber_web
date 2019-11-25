@@ -4,8 +4,6 @@ import TaskLine from "./taskLine";
 
 import { Task } from "../../typings/tasks";
 
-import "../styles/tasks.scss";
-
 interface TreeProps {
     tasks: Task[];
     parent: Task;

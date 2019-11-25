@@ -3,8 +3,6 @@ import { Link as RouterLink } from "react-router-dom";
 
 import { ReactDescendant } from "../../typings/react";
 
-import "../styles/components.scss";
-
 interface Props {
     children?: ReactDescendant;
     to: string;

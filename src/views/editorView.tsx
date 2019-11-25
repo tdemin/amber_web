@@ -17,8 +17,6 @@ import { Store } from "../typings/store";
 
 import strings from "./assets/locales";
 
-import "./styles/editorView.scss";
-
 const mapStateToProps = (state: Store) => ({
     tasks: state.task.tasks,
 });

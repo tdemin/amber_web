@@ -19,8 +19,6 @@ import { Store } from "../typings/store";
 
 import strings from "./assets/locales";
 
-import "./styles/mainView.scss";
-
 const mapStateToProps = (state: Store) => ({
     tasks: state.task.tasks,
     username: state.auth.username,

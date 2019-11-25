@@ -11,6 +11,8 @@ import EditorView from "./views/editorView";
 
 import { setToken, resetToken } from "./actions/auth";
 
+import "./views/styles/common.scss";
+
 const mapStateToProps = (state: Store) => ({
     token: state.auth.token,
     username: state.auth.username,
