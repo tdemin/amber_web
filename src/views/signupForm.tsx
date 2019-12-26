@@ -1,6 +1,6 @@
 import React from "react";
 import { RouteComponentProps as RCP } from "react-router-dom";
-import { AxiosResponse, AxiosError } from "axios";
+import { AxiosError } from "axios";
 
 import Container from "./components/bulma/container";
 import Button from "./components/bulma/button";
@@ -52,11 +52,20 @@ class SignupForm extends React.PureComponent<RCP, State> {
             this.state.name,
             this.state.password,
             () => this.setState({ status: Status.SUCCESS }),
-            (e: AxiosError) =>
-                this.setState({
-                    status: Status.FAILED,
-                    httpCode: (e.response as AxiosResponse).status,
-                })
+            (e: AxiosError) => {
+                if (e.response) {
+                    this.setState({
+                        status: Status.FAILED,
+                        httpCode: e.response?.status,
+                    });
+                } else {
+                    // fallback for possible CORS errors
+                    this.setState({
+                        status: Status.FAILED,
+                        httpCode: Errors.FORBIDDEN,
+                    });
+                }
+            }
         );
     };
     goBack = () => this.props.history.push("/");
