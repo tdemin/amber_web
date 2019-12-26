@@ -8,6 +8,11 @@ export type AuthData = {
     password: string;
 };
 
+export type VersionData = {
+    version: string;
+    signup: boolean;
+};
+
 /**
  * Serializes authentication data into a JSON object to be pushed to the API
  * server. Returns the resulting object.
