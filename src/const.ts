@@ -12,3 +12,5 @@ export const amberHomePage: string = "https://git.tdem.in/tdemin/amber";
 
 /** Network timeout (in ms) as used by Axios. */
 export const networkTimeout: number = 5000;
+/** Delay used for UI stuff like purging tasks recursively. */
+export const uiDelay: number = 1000;
