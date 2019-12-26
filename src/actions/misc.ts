@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 
 import req from "../axios";
-import { VersionData } from "../helpers/api";
+import { VersionData } from "../typings/api";
 
 export const getServerVersion = async () => {
     let versionData: VersionData | undefined;

@@ -4,7 +4,8 @@ import { Dispatch } from "redux";
 
 import Actions from "./list";
 import { AuthAction } from "../typings/actions";
-import { serializeAuthData, SuccessAction, FailAction } from "../helpers/api";
+import { serializeAuthData } from "../helpers/api";
+import { SuccessAction, FailAction } from "../typings/api";
 
 const tokenHeader = "X-Auth-Token";
 
