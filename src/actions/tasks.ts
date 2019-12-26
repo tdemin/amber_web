@@ -38,10 +38,8 @@ const resolveUpdates = (merge: TaskMergeResult, dispatch: Dispatch) => {
 export const refetchTasks = (localTasks: Task[]) => (dispatch: Dispatch) => {
     req.get("/task").then(
         (res: AxiosResponse) => {
-            const remoteTasks = res.data["tasks"].map((x: TaskRecord) =>
-                taskFromRecord(x)
-            ) as Task[];
-            const merge = mergeTasks(remoteTasks, localTasks);
+            const rm = (res.data as TaskRecord[]).map((x) => taskFromRecord(x));
+            const merge = mergeTasks(rm, localTasks);
             resolveUpdates(merge, dispatch);
         },
         () => {
@@ -59,8 +57,7 @@ export const refetchTasks = (localTasks: Task[]) => (dispatch: Dispatch) => {
 export const createTask = (task: Task) => (dispatch: Dispatch) => {
     req.post("/task", taskToRecord(task)).then(
         (res: AxiosResponse) => {
-            const { id } = res.data;
-            task.ID = id;
+            task.ID = res.data;
             dispatch({
                 type: Actions.TaskCreate,
                 data: task,

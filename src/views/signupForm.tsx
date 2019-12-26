@@ -1,8 +1,6 @@
 import React from "react";
 import { RouteComponentProps as RCP } from "react-router-dom";
-import { AxiosError, AxiosResponse } from "axios";
-
-import req from "../axios";
+import { AxiosResponse, AxiosError } from "axios";
 
 import Container from "./components/bulma/container";
 import Button from "./components/bulma/button";
@@ -13,6 +11,7 @@ import Field from "./components/bulma/field";
 import Message from "./components/message";
 
 import strings from "./assets/locales";
+import { signup as callAPISignup } from "../actions/auth";
 
 const successRedirectDelay = 5000;
 
@@ -49,8 +48,9 @@ class SignupForm extends React.PureComponent<RCP, State> {
     };
     signup = () => {
         this.setState({ status: Status.IN_PROCESS });
-        let data = { name: this.state.name, password: this.state.password };
-        req.post("/signup", data).then(
+        callAPISignup(
+            this.state.name,
+            this.state.password,
             () => this.setState({ status: Status.SUCCESS }),
             (e: AxiosError) =>
                 this.setState({
