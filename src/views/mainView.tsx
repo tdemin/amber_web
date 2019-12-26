@@ -17,6 +17,7 @@ import { AnyAction } from "../typings/actions";
 import { Task } from "../typings/tasks";
 import { Store } from "../typings/store";
 
+import { uiDelay } from "../const";
 import strings from "./assets/locales";
 
 const mapStateToProps = (state: Store) => ({
@@ -47,6 +48,8 @@ class MainView extends React.Component<Props, State> {
                     .length === 0 && task.Completed
         );
         danglingTasks.forEach((task) => this.props.dispatch(deleteTask(task)));
+        // more tasks possibly left to go?
+        danglingTasks.length > 0 && setTimeout(() => this.prune(), uiDelay);
     };
     updateSearch = (e: React.FormEvent<HTMLInputElement>) =>
         this.setState({

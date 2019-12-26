@@ -4,6 +4,8 @@ import { Dispatch } from "redux";
 
 import Actions from "./list";
 import { AuthAction } from "../typings/actions";
+import { serializeAuthData } from "../helpers/api";
+import { SuccessAction, FailAction } from "../typings/api";
 
 const tokenHeader = "X-Auth-Token";
 
@@ -14,10 +16,7 @@ const tokenHeader = "X-Auth-Token";
  * @param pass Password in plain text
  */
 export const login = (user: string, pass: string) => (dispatch: Dispatch) => {
-    req.post("/login", {
-        name: user,
-        password: pass,
-    }).then(
+    req.post("/login", serializeAuthData(user, pass)).then(
         (res: AxiosResponse) => {
             setToken(res.data.token);
             dispatch({
@@ -45,6 +44,23 @@ export const logout = () => (dispatch: Dispatch) => {
             type: Actions.LoggedOut,
         } as AuthAction);
     });
+};
+
+/**
+ * Signup function. Performs an HTTP POST request, calls the provided functions
+ * on success/fail.
+ * @param user Username
+ * @param pass Password in plain text
+ * @param sh Function to be called on success
+ * @param fh Function to be called on fail
+ */
+export const signup = (
+    user: string,
+    pass: string,
+    sh: SuccessAction,
+    fh: FailAction
+) => {
+    req.post("/signup", serializeAuthData(user, pass)).then(sh, fh);
 };
 
 /**

@@ -1,6 +1,6 @@
 import LocalizedStrings from "react-localization";
 
-import { appVersion, appFullName, appAuthor } from "../../const";
+import { appVersion, appFullName, appAuthor, amberFullName } from "../../const";
 
 export default new LocalizedStrings({
     en: {
@@ -35,5 +35,6 @@ export default new LocalizedStrings({
         task_toggleBtnCompleted: "Completed",
         task_toggleBtnPending: "Pending",
         app_versionString: `${appFullName} v${appVersion} by ${appAuthor}`,
+        amber_versionString: `${amberFullName} v`,
     },
 });
