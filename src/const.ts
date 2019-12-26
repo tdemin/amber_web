@@ -7,5 +7,8 @@ export const appName: string = "amber_web";
 export const appAuthor: string = "Timur Demin";
 export const appHomePage: string = "https://git.tdem.in/tdemin/amber_web";
 
+export const amberFullName: string = "Amber Server";
+export const amberHomePage: string = "https://git.tdem.in/tdemin/amber";
+
 /** Network timeout (in ms) as used by Axios. */
 export const networkTimeout: number = 5000;

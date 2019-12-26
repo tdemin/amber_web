@@ -67,6 +67,11 @@ div.searchBox {
     }
 }
 
+.footer_links {
+    display: flex;
+    flex-direction: column;
+}
+
 @media (max-width: $small) {
     div.headerText {
         display: none;
