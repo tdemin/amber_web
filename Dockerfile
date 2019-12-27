@@ -8,7 +8,7 @@ RUN yarn install
 
 COPY public /app/public
 COPY src /app/src
-ARG REACT_APP_APIURI=https://amber.h.tdem.in/api
+ARG REACT_APP_APIURI=https://amber.h.tdem.in/api/v0
 RUN yarn build
 
 FROM nginx:1.16-alpine AS release
