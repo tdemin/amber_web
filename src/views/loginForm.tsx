@@ -12,6 +12,7 @@ import Level from "./components/bulma/level";
 import Message from "./components/message";
 
 import { login } from "../actions/auth";
+import { getServerVersion } from "../actions/misc";
 import { AuthAction } from "../typings/actions";
 import { Store } from "../typings/store";
 
@@ -26,6 +27,7 @@ interface State {
     username: string;
     password: string;
     loginFailed: boolean;
+    signupEnabled: boolean;
 }
 interface Props extends RouteComponentProps {
     loginFailed?: boolean;
@@ -36,7 +38,12 @@ class LoginForm extends React.PureComponent<Props, State> {
         username: "",
         password: "",
         loginFailed: this.props.loginFailed,
+        signupEnabled: false,
     } as State;
+    componentDidMount = async () => {
+        let versionData = await getServerVersion();
+        this.setState({ signupEnabled: versionData.signup });
+    };
     componentDidUpdate = (prevProps: Props) => {
         if (prevProps.loginFailed !== this.props.loginFailed) {
             this.setState({ loginFailed: this.props.loginFailed as boolean });
@@ -77,6 +84,7 @@ class LoginForm extends React.PureComponent<Props, State> {
                     <Level levelItem levelRight>
                         <Control>
                             <Button
+                                disabled={!this.state.signupEnabled}
                                 onClick={this.toSignup}
                                 value={strings.login_signupBtn}
                             />
