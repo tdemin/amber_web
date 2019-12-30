@@ -42,7 +42,7 @@ class SignupForm extends React.PureComponent<RCP, State> {
     componentDidUpdate = () => {
         if (this.state.status === Status.SUCCESS) {
             setTimeout(() => {
-                this.props.history.push("/");
+                this.goBack();
             }, successRedirectDelay);
         }
     };
