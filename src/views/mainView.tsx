@@ -18,7 +18,49 @@ import { Task } from "../typings/tasks";
 import { Store } from "../typings/store";
 
 import { uiDelay } from "../const";
+import { hotkeyHandler, escCode } from "./helpers/keyboard";
 import strings from "./assets/locales";
+
+const generateHotkeyHandler = (view: MainView) => (e: KeyboardEvent) => {
+    const search = document.getElementById("searchInput") as HTMLElement;
+    const searchFocused = document.activeElement === search;
+    const map = [
+        {
+            match: () => (e.ctrlKey || e.metaKey) && e.key === "f",
+            action: () => {
+                e.preventDefault();
+                search.focus();
+            },
+        },
+        {
+            match: () => e.key === "n" && !searchFocused,
+            action: () => {
+                e.preventDefault();
+                view.toNewTask();
+            },
+        },
+        {
+            match: () => e.key === "u" && !searchFocused,
+            action: () => {
+                e.preventDefault();
+                view.refetch();
+            },
+        },
+        {
+            match: () => e.keyCode === escCode && searchFocused,
+            action: () => {
+                e.preventDefault();
+                const ae = document.activeElement as HTMLInputElement;
+                ae.blur();
+                ae.value = "";
+                view.setState({
+                    search: "",
+                });
+            },
+        },
+    ];
+    hotkeyHandler(map);
+};
 
 const mapStateToProps = (state: Store) => ({
     tasks: state.task.tasks,
@@ -39,6 +81,22 @@ class MainView extends React.Component<Props, State> {
         tasks: this.props.tasks,
         search: "",
     };
+    hotkeyHandler = generateHotkeyHandler(this);
+    componentDidMount = () => {
+        this.refetch();
+        document.addEventListener("keydown", this.hotkeyHandler);
+    };
+    componentWillUnmount = () => {
+        document.removeEventListener("keydown", this.hotkeyHandler);
+    };
+    componentDidUpdate = (prevProps: Props) => {
+        if (prevProps.tasks !== this.props.tasks) {
+            this.setState({
+                tasks: this.props.tasks,
+            });
+        }
+    };
+    toNewTask = () => this.props.history.push("/task/new");
     logout = () => this.props.dispatch(logout());
     refetch = () => this.props.dispatch(refetchTasks(this.props.tasks));
     prune = () => {
@@ -55,42 +113,6 @@ class MainView extends React.Component<Props, State> {
         this.setState({
             search: e.currentTarget.value,
         });
-    toNewTask = () => this.props.history.push("/task/new");
-    componentDidMount = () => {
-        this.refetch();
-        document.addEventListener("keydown", this.handleHotkeys);
-    };
-    componentWillUnmount = () => {
-        document.removeEventListener("keydown", this.handleHotkeys);
-    };
-    componentDidUpdate = (prevProps: Props) => {
-        if (prevProps.tasks !== this.props.tasks) {
-            this.setState({
-                tasks: this.props.tasks,
-            });
-        }
-    };
-    handleHotkeys = (e: KeyboardEvent) => {
-        const escCode = 27;
-        const search = document.getElementById("searchInput");
-        const searchFocused = document.activeElement === search;
-        if ((e.ctrlKey || e.metaKey) && e.key === "f") {
-            e.preventDefault();
-            (search as HTMLElement).focus();
-        } else if (e.key === "n" && !searchFocused) {
-            e.preventDefault();
-            this.toNewTask();
-        } else if (e.key === "u" && !searchFocused) {
-            e.preventDefault();
-            this.refetch();
-        } else if (e.keyCode === escCode && searchFocused) {
-            (document.activeElement as HTMLElement).blur();
-            e.preventDefault();
-            this.setState({
-                search: "",
-            });
-        }
-    };
     render = () => {
         const { username } = this.props;
         const { tasks, search } = this.state;

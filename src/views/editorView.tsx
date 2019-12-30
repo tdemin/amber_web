@@ -11,11 +11,54 @@ import Level from "./components/bulma/level";
 import TaskSelect from "./components/taskSelect";
 
 import { deleteTask, updateTask, createTask } from "../actions/tasks";
+import { hotkeyHandler, escCode, Hotkey } from "./helpers/keyboard";
 import { TaskAction } from "../typings/actions";
 import { Task } from "../typings/tasks";
 import { Store } from "../typings/store";
 
 import strings from "./assets/locales";
+
+const generateHotkeyHandler = (view: EditorView) => (e: KeyboardEvent) => {
+    const textInput = document.getElementById("taskTextInput") as HTMLElement;
+    const parentSelect = document.getElementById("taskParentSelect");
+    const statusBtn = document.getElementById("taskStatusButton");
+    const editFocused =
+        document.activeElement === textInput ||
+        document.activeElement === parentSelect ||
+        document.activeElement === statusBtn;
+    const map: Hotkey[] = [
+        {
+            match: () => e.key === "b" && !editFocused,
+            action: () => {
+                e.preventDefault();
+                view.props.history.push("/");
+            },
+        },
+        {
+            match: () => e.key === "s" && !editFocused,
+            action: () => {
+                e.preventDefault();
+                view.saveChanges();
+            },
+        },
+        {
+            match: () => e.key === "d" && !editFocused && !view.state.newTask,
+            action: () => {
+                e.preventDefault();
+                view.delete();
+            },
+        },
+        {
+            match: () =>
+                e.keyCode === escCode && document.activeElement === textInput,
+            action: () => {
+                e.preventDefault();
+                textInput.blur();
+            },
+        },
+    ];
+    hotkeyHandler(map);
+};
 
 const mapStateToProps = (state: Store) => ({
     tasks: state.task.tasks,
@@ -45,6 +88,7 @@ class EditorView extends React.Component<Props, State> {
         newTask: false,
         title: "",
     };
+    hotkeyHandler = generateHotkeyHandler(this);
     componentDidMount = () => {
         // editing or creating a new task?
         if (this.props.match.params.id !== "new") {
@@ -72,36 +116,10 @@ class EditorView extends React.Component<Props, State> {
                 title: strings.editor_newTaskTitle,
             });
         }
-        document.addEventListener("keydown", this.handleHotkeys);
+        document.addEventListener("keydown", this.hotkeyHandler);
     };
     componentWillUnmount = () => {
-        document.removeEventListener("keydown", this.handleHotkeys);
-    };
-    handleHotkeys = (e: KeyboardEvent) => {
-        const escCode = 27;
-        const textInput = document.getElementById("taskTextInput");
-        const parentSelect = document.getElementById("taskParentSelect");
-        const statusBtn = document.getElementById("taskStatusButton");
-        const editFocused =
-            document.activeElement === textInput ||
-            document.activeElement === parentSelect ||
-            document.activeElement === statusBtn;
-        if (e.key === "b" && !editFocused) {
-            e.preventDefault();
-            this.props.history.push("/");
-        } else if (e.key === "s" && !editFocused) {
-            e.preventDefault();
-            this.saveChanges();
-        } else if (e.key === "d" && !editFocused && !this.state.newTask) {
-            e.preventDefault();
-            this.delete();
-        } else if (
-            e.keyCode === escCode &&
-            document.activeElement === textInput
-        ) {
-            e.preventDefault();
-            (textInput as HTMLElement).blur();
-        }
+        document.removeEventListener("keydown", this.hotkeyHandler);
     };
     delete = () => {
         this.props.dispatch(deleteTask(this.state.task));
