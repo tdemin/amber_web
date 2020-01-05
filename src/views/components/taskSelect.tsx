@@ -17,22 +17,25 @@ interface Props extends HTMLAttributes<HTMLSelectElement> {
     onChange: (event: React.FormEvent<HTMLSelectElement>) => void;
 }
 const TaskSelect: React.FC<Props> = (props) => (
-    <select
-        onChange={props.onChange}
-        value={props.initialValue}
-        className={props.className}
-    >
-        <option value={0}>{strings.editor_parentNoParentVal}</option>
-        {props.tasks.map(
-            (task) =>
-                task.ID !== props.current.ID && (
-                    <option
-                        key={task.ID}
-                        value={task.ID}
-                    >{`${task.ID} - ${task.Text}`}</option>
-                )
-        )}
-    </select>
+    <div className="select">
+        <select
+            id={props.id}
+            onChange={props.onChange}
+            value={props.initialValue}
+            className={props.className}
+        >
+            <option value={0}>{strings.editor_parentNoParentVal}</option>
+            {props.tasks.map(
+                (task) =>
+                    task.ID !== props.current.ID && (
+                        <option
+                            key={task.ID}
+                            value={task.ID}
+                        >{`${task.ID} - ${task.Text}`}</option>
+                    )
+            )}
+        </select>
+    </div>
 );
 
 export default connect(mapStateToProps)(TaskSelect);

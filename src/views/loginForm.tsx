@@ -1,17 +1,27 @@
 import React from "react";
-import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
 
+import Container from "./components/bulma/container";
+import Button from "./components/bulma/button";
+import Input from "./components/bulma/input";
+import Control from "./components/bulma/control";
+import Field from "./components/bulma/field";
+import Level from "./components/bulma/level";
+import Message from "./components/message";
+
 import { login } from "../actions/auth";
-import { AuthAction } from "../typings/actions";
+import { getServerVersion } from "../actions/misc";
+import { Dispatch, RCPWithDispProps } from "../typings/react";
 import { Store } from "../typings/store";
 
 import strings from "./assets/locales";
 
-import "./styles/loginForm.scss";
-
 const mapStateToProps = (state: Store) => ({
     loginFailed: state.auth.loginFailed,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    login: (user: string, pass: string) => dispatch(login(user, pass)),
 });
 
 // applies to the state as well
@@ -19,67 +29,71 @@ interface State {
     username: string;
     password: string;
     loginFailed: boolean;
+    signupEnabled: boolean;
 }
-interface Props {
+interface Props extends RCPWithDispProps<typeof mapDispatchToProps> {
     loginFailed?: boolean;
-    dispatch: ThunkDispatch<any, any, AuthAction>;
 }
 class LoginForm extends React.PureComponent<Props, State> {
     state = {
         username: "",
         password: "",
         loginFailed: this.props.loginFailed,
+        signupEnabled: false,
     } as State;
+    componentDidMount = async () => {
+        let versionData = await getServerVersion();
+        this.setState({ signupEnabled: versionData.signup });
+    };
     componentDidUpdate = (prevProps: Props) => {
-        if (prevProps.loginFailed !== this.props.loginFailed)
+        if (prevProps.loginFailed !== this.props.loginFailed) {
             this.setState({ loginFailed: this.props.loginFailed as boolean });
+        }
     };
     updateUserName = (event: React.FormEvent<HTMLInputElement>) =>
         this.setState({ username: event.currentTarget.value });
     updatePassword = (event: React.FormEvent<HTMLInputElement>) =>
         this.setState({ password: event.currentTarget.value });
-    login = () =>
-        this.props.dispatch(login(this.state.username, this.state.password));
+    login = () => this.props.login(this.state.username, this.state.password);
+    toSignup = () => this.props.history.push("/signup");
+    onKeyPress = (event: React.KeyboardEvent<HTMLElement>) => {
+        event.key === "Enter" && this.login();
+    };
     render = () => (
-        <div className="root container">
+        <Container onKeyPress={this.onKeyPress}>
             <form className="loginForm">
-                <div className="field">
-                    <label className="label">{strings.login_userNameTp}</label>
-                    <div className="control">
-                        <input
-                            className="input"
-                            type="text"
-                            onChange={this.updateUserName}
-                        />
-                    </div>
-                </div>
-                <div className="field">
-                    <label className="label">{strings.login_passwordTp}</label>
-                    <div className="control">
-                        <input
-                            className="input"
-                            type="password"
-                            onChange={this.updatePassword}
-                        />
-                    </div>
-                </div>
-                <span
-                    className="wrongPassTooltip"
-                    style={{
-                        display: this.state.loginFailed ? "block" : "none",
-                    }}
-                >
-                    {strings.login_wrongPassTp}
-                </span>
-                <input
-                    type="button"
-                    className="button"
-                    value={strings.login_loginBtn}
-                    onClick={this.login}
+                <Field label={strings.login_userNameTp}>
+                    <Input autoFocus onChange={this.updateUserName} />
+                </Field>
+                <Field label={strings.login_passwordTp}>
+                    <Input password onChange={this.updatePassword} />
+                </Field>
+                <Message
+                    condition={this.state.loginFailed}
+                    message={strings.login_wrongPassTp}
                 />
+                <Level level isMobile>
+                    <Level levelItem levelLeft>
+                        <Control>
+                            <Button
+                                onClick={this.login}
+                                value={strings.login_loginBtn}
+                            />
+                        </Control>
+                    </Level>
+                    <Level levelItem levelRight>
+                        <Control>
+                            <Button
+                                disabled={!this.state.signupEnabled}
+                                onClick={this.toSignup}
+                                value={strings.login_signupBtn}
+                            />
+                        </Control>
+                    </Level>
+                </Level>
             </form>
-        </div>
+        </Container>
     );
 }
 
-export default connect(mapStateToProps)(LoginForm);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

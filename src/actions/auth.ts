@@ -1,53 +1,76 @@
 import req from "../axios";
-import { AxiosResponse, AxiosError } from "axios";
+import { AxiosResponse } from "axios";
 import { Dispatch } from "redux";
 
 import Actions from "./list";
 import { AuthAction } from "../typings/actions";
+import { serializeAuthData } from "../helpers/api";
+import { SuccessAction, FailAction } from "../typings/api";
 
 const tokenHeader = "X-Auth-Token";
 
 /**
  * Redux action creator. Performs an HTTP request, if it succeeds, copies
  * the token from the response.
- * @param username User name
- * @param password Password in plain text
+ * @param user User name
+ * @param pass Password in plain text
  */
-export const login = (username: string, password: string) =>
-    function(dispatch: Dispatch): void {
-        req.post("/login", {
-            name: username,
-            password: password,
-        }).then(
-            (res: AxiosResponse) => {
-                setToken(res.data.token);
-                dispatch({
-                    type: Actions.LoginSuccess,
-                    username: username,
-                    token: res.data.token,
-                } as AuthAction);
-            },
-            (err: AxiosError) => {
-                dispatch({
-                    type: Actions.LoginFailed,
-                } as AuthAction);
-            }
-        );
-    };
+export const login = (user: string, pass: string) => (dispatch: Dispatch) => {
+    req.post("/login", serializeAuthData(user, pass)).then(
+        (res: AxiosResponse) => {
+            setToken(res.data.token);
+            dispatch({
+                type: Actions.LoginSuccess,
+                username: user,
+                token: res.data.token,
+            } as AuthAction);
+        },
+        () => {
+            dispatch({
+                type: Actions.LoginFailed,
+            } as AuthAction);
+        }
+    );
+};
 
 /**
  * Redux action creator. Performs an HTTP request, if it succeeds, clears
  * the token from the cache.
  */
-export const logout = () =>
-    function(dispatch: Dispatch): void {
-        req.post("/logout", {}).then(() => {
-            resetToken();
-            dispatch({
-                type: Actions.LoggedOut,
-            } as AuthAction);
-        });
-    };
+export const logout = () => (dispatch: Dispatch) => {
+    req.post("/logout", {}).then(() => {
+        resetToken();
+        dispatch({
+            type: Actions.LoggedOut,
+        } as AuthAction);
+    });
+};
+
+/** Redux action creator. Performs a logout locally without making an API call.
+ * */
+export const localLogout = () => {
+    resetToken();
+    return {
+        type: Actions.LoggedOut,
+    } as AuthAction;
+};
+
+/**
+ * Signup function. Performs an HTTP POST request, calls the provided functions
+ * on success/fail.
+ * @param user Username
+ * @param pass Password in plain text
+ * @param sh Function to be called on success
+ * @param fh Function to be called on fail
+ */
+export const signup = (
+    user: string,
+    pass: string,
+    sh: SuccessAction,
+    fh: FailAction
+) => {
+    req.post("/signup", serializeAuthData(user, pass)).then(sh, fh);
+};
 
 /**
  * Sets an auth token in the app's Axios instance to be used in every request

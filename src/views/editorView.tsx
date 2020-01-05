@@ -1,35 +1,85 @@
 import React from "react";
-import { ThunkDispatch } from "redux-thunk";
-import { match as Match, RouteComponentProps } from "react-router";
+import { match as Match } from "react-router";
 import { connect } from "react-redux";
 
+import Container from "./components/bulma/container";
+import Button from "./components/bulma/button";
+import Input from "./components/bulma/input";
+import Field from "./components/bulma/field";
+import Level from "./components/bulma/level";
 import TaskSelect from "./components/taskSelect";
 
 import { deleteTask, updateTask, createTask } from "../actions/tasks";
-
-import { TaskAction } from "../typings/actions";
+import { hotkeyHandler, escCode, Hotkey } from "./helpers/keyboard";
 import { Task } from "../typings/tasks";
 import { Store } from "../typings/store";
+import { Dispatch, RCPWithDispProps } from "../typings/react";
 
 import strings from "./assets/locales";
 
-import "./styles/editorView.scss";
+const generateHotkeyHandler = (view: EditorView) => (e: KeyboardEvent) => {
+    const textInput = document.getElementById("taskTextInput") as HTMLElement;
+    const parentSelect = document.getElementById("taskParentSelect");
+    const statusBtn = document.getElementById("taskStatusButton");
+    const editFocused =
+        document.activeElement === textInput ||
+        document.activeElement === parentSelect ||
+        document.activeElement === statusBtn;
+    const map: Hotkey[] = [
+        {
+            match: () => e.key === "b" && !editFocused,
+            action: () => {
+                e.preventDefault();
+                view.props.history.push("/");
+            },
+        },
+        {
+            match: () => e.key === "s" && !editFocused,
+            action: () => {
+                e.preventDefault();
+                view.saveChanges();
+            },
+        },
+        {
+            match: () => e.key === "d" && !editFocused && !view.state.newTask,
+            action: () => {
+                e.preventDefault();
+                view.delete();
+            },
+        },
+        {
+            match: () =>
+                e.keyCode === escCode && document.activeElement === textInput,
+            action: () => {
+                e.preventDefault();
+                textInput.blur();
+            },
+        },
+    ];
+    hotkeyHandler(map);
+};
 
 const mapStateToProps = (state: Store) => ({
     tasks: state.task.tasks,
 });
 
-interface Params {
-    id: string;
-}
-interface Props extends RouteComponentProps {
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    create: (task: Task) => dispatch(createTask(task)),
+    update: (task: Task) => dispatch(updateTask(task)),
+    delete: (task: Task) => dispatch(deleteTask(task)),
+});
+
+/** Used to delay navigation before we are finished with stuff. */
+const waitTimeout = 200;
+
+interface Props extends RCPWithDispProps<typeof mapDispatchToProps> {
     tasks: Task[];
-    dispatch: ThunkDispatch<any, any, TaskAction>;
-    match: Match<Params>;
+    match: Match<{ id: string }>;
 }
 interface State {
     task?: Task;
     newTask: boolean;
+    title: string;
 }
 class EditorView extends React.Component<Props, State> {
     state = {
@@ -40,21 +90,24 @@ class EditorView extends React.Component<Props, State> {
             PID: 0,
         } as Task,
         newTask: false,
+        title: "",
     };
+    hotkeyHandler = generateHotkeyHandler(this);
     componentDidMount = () => {
+        document.addEventListener("keydown", this.hotkeyHandler);
         // editing or creating a new task?
         if (this.props.match.params.id !== "new") {
             const id = parseInt(this.props.match.params.id);
-            const task = this.props.tasks.find((task) => task.ID === id);
-            this.setState(() => ({
-                task: task,
-            }));
+            const task = this.props.tasks.find((t) => t.ID === id) as Task;
+            this.setState({
+                task,
+                title: task.Text,
+            });
         } else {
             // create a new task
             let maxID = 0;
-            this.props.tasks.forEach(
-                (task) => task.ID > maxID && (maxID = task.ID)
-            );
+            // find the biggest ID and use <maxID + 1>
+            this.props.tasks.forEach((t) => t.ID > maxID && (maxID = t.ID));
             const newID = maxID + 1;
             const newTask = {
                 ID: newID,
@@ -65,89 +118,92 @@ class EditorView extends React.Component<Props, State> {
             this.setState({
                 task: newTask,
                 newTask: true,
+                title: strings.editor_newTaskTitle,
             });
         }
     };
+    componentWillUnmount = () => {
+        document.removeEventListener("keydown", this.hotkeyHandler);
+    };
     delete = () => {
-        this.props.dispatch(deleteTask(this.state.task));
+        this.props.delete(this.state.task);
         setTimeout(() => {
             this.props.history.goBack();
-        }, 200);
+        }, waitTimeout);
     };
-    updateText = (event: React.FormEvent<HTMLInputElement>) => {
+    updateText = (e: React.FormEvent<HTMLInputElement>) => {
         const { task } = this.state;
-        task.Text = event.currentTarget.value;
-        this.setState(() => ({ task: task }));
+        task.Text = e.currentTarget.value;
+        this.setState(() => ({ task }));
     };
     updateStatus = () => {
         const { task } = this.state;
         task.Completed = !task.Completed;
-        this.setState(() => ({ task: task }));
+        this.setState(() => ({ task }));
     };
-    updateParent = (event: React.FormEvent<HTMLSelectElement>) => {
-        const newPID = parseInt(event.currentTarget.value);
+    updateParent = (e: React.FormEvent<HTMLSelectElement>) => {
+        const newPID = parseInt(e.currentTarget.value);
         const { task } = this.state;
         task.PID = newPID;
-        this.setState(() => ({ task: task }));
+        this.setState(() => ({ task }));
     };
     saveChanges = () => {
         if (this.state.newTask) {
-            this.props.dispatch(createTask(this.state.task));
+            this.props.create(this.state.task);
         } else {
-            this.props.dispatch(updateTask(this.state.task));
+            this.props.update(this.state.task);
         }
         // delay the reload so fetching tasks doesn't proceed before we have
         // pushed stuff to the server
         setTimeout(() => {
             this.props.history.goBack();
-        }, 200);
+        }, waitTimeout);
     };
     render = () => {
-        const task: Task = this.state.task;
+        const { task, title } = this.state;
         return (
-            <div className="root container">
-                <div className="navbar level is-mobile">
-                    <div className="headerLeft level-left level-item">
-                        <input
-                            type="button"
-                            className="button"
-                            onClick={this.props.history.goBack}
+            <Container className="editor_view">
+                <Level className="navbar" level isMobile>
+                    <Level className="headerLeft" levelLeft levelItem>
+                        <Button
                             value={strings.btns_goBack}
+                            onClick={this.props.history.goBack}
                         />
-                    </div>
-                    {/* eslint-disable-next-line max-len */}
-                    <div className="headerRight level-right level-item level is-mobile">
-                        <input
-                            type="button"
-                            className="button level-item"
-                            value={strings.btns_updateTask}
-                            onClick={this.saveChanges}
-                        />
-                        <input
-                            type="button"
-                            className="button level-item"
-                            value={strings.btns_deleteTask}
-                            onClick={this.delete}
-                            // we can't delete a task we haven't created yet
-                            disabled={this.state.newTask}
-                        />
-                    </div>
-                </div>
-                <div className="main">
-                    <span className="subtitle">
-                        #{task.ID} - {task.Text}
-                    </span>
+                    </Level>
+                    <Level
+                        className="headerRight"
+                        levelRight
+                        levelItem
+                        level
+                        isMobile
+                    >
+                        <Level levelItem>
+                            <Button
+                                className="level-item"
+                                value={strings.btns_updateTask}
+                                onClick={this.saveChanges}
+                            />
+                        </Level>
+                        <Level levelItem>
+                            <Button
+                                className="level-item"
+                                value={strings.btns_deleteTask}
+                                onClick={this.delete}
+                                disabled={this.state.newTask}
+                            />
+                        </Level>
+                    </Level>
+                </Level>
+                <Level className="main">
+                    <span className="subtitle">{`#${task.ID} - ${title}`}</span>
                     {/* another div, needed for border styling fixes */}
-                    <div className="fix">
-                        <div className="editor">
-                            <div className="field">
-                                <label className="label">
-                                    {strings.editor_statusTp}
-                                </label>
-                                <div className="control">
-                                    <input
-                                        className="button"
-                                        type="button"
+                    <Level className="fix">
+                        <Level className="editor">
+                            <Field
+                                label={strings.editor_statusTp}
+                                control={
+                                    <Button
+                                        id="taskStatusButton"
                                         value={
                                             task.Completed
                                                 ? strings.editor_completedTp
@@ -155,41 +211,36 @@ class EditorView extends React.Component<Props, State> {
                                         }
                                         onClick={this.updateStatus}
                                     />
-                                </div>
-                            </div>
-                            <div className="field">
-                                <label className="label">
-                                    {strings.editor_textTp}
-                                </label>
-                                <div className="control">
-                                    <input
-                                        className="input"
-                                        type="text"
+                                }
+                            />
+                            <Field
+                                label={strings.editor_textTp}
+                                control={
+                                    <Input
+                                        id="taskTextInput"
+                                        autoFocus
                                         onChange={this.updateText}
                                         value={task.Text}
                                     />
-                                </div>
-                            </div>
-                            <div className="field">
-                                <label className="label">
-                                    {strings.editor_parentTp}
-                                </label>
-                                <div className="control">
-                                    <div className="select">
-                                        <TaskSelect
-                                            current={task}
-                                            initialValue={task.PID}
-                                            onChange={this.updateParent}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                }
+                            />
+                            <Field
+                                label={strings.editor_parentTp}
+                                control={
+                                    <TaskSelect
+                                        id="taskParentSelect"
+                                        current={task}
+                                        initialValue={task.PID}
+                                        onChange={this.updateParent}
+                                    />
+                                }
+                            />
+                        </Level>
+                    </Level>
+                </Level>
+            </Container>
         );
     };
 }
 
-export default connect(mapStateToProps)(EditorView);
+export default connect(mapStateToProps, mapDispatchToProps)(EditorView);

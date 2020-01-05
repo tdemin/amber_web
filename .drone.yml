@@ -9,8 +9,10 @@ steps:
   commands:
   - node -v
   - yarn install
-  - yarn run eslint src
+  - yarn lint
   when:
+    event:
+    - push
     branch:
       exclude:
       - master
@@ -24,16 +26,9 @@ steps:
     repo: registry.git.tdem.in/amber_web
     registry: registry.git.tdem.in
     dockerfile: Dockerfile
+    tags:
+      - ${DRONE_TAG}
+      - latest
   when:
-    branch:
-      exclude:
-      - develop
-      - backend
-      - feature/*
-
-trigger:
-  event:
-  - push
-  - tag
-  - promote
-  - rollback
+    event:
+    - tag

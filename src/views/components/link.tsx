@@ -1,10 +1,10 @@
-import React, { ReactChild, ReactChildren } from "react";
+import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 
-import "../styles/components.scss";
+import { ReactDescendant } from "../../typings/react";
 
 interface Props {
-    children?: (ReactChild | string)[] | ReactChild | ReactChildren;
+    children?: ReactDescendant;
     to: string;
 }
 

@@ -4,8 +4,6 @@ import TaskLine from "./taskLine";
 
 import { Task } from "../../typings/tasks";
 
-import "../styles/tasks.scss";
-
 interface TreeProps {
     tasks: Task[];
     parent: Task;
@@ -46,7 +44,9 @@ const TaskList: React.FC<Props> = (props) => {
                     .toLocaleLowerCase()
                     .includes(value.Text.toLocaleLowerCase())
         );
-    } else displayTasks = tasks.filter((task) => task.PID === 0);
+    } else {
+        displayTasks = tasks.filter((task) => task.PID === 0);
+    }
     return (
         <div className="taskList">
             {displayTasks.map((task) => (
