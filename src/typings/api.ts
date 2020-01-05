@@ -12,3 +12,5 @@ export type VersionData = {
     version: string;
     signup: boolean;
 };
+
+export const HTTPSuccessCode = 200;

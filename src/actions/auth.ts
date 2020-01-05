@@ -46,6 +46,15 @@ export const logout = () => (dispatch: Dispatch) => {
     });
 };
 
+/** Redux action creator. Performs a logout locally without making an API call.
+ * */
+export const localLogout = () => {
+    resetToken();
+    return {
+        type: Actions.LoggedOut,
+    } as AuthAction;
+};
+
 /**
  * Signup function. Performs an HTTP POST request, calls the provided functions
  * on success/fail.

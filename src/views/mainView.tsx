@@ -1,7 +1,5 @@
 import React from "react";
-import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
-import { RouteComponentProps } from "react-router-dom";
 
 import Container from "./components/bulma/container";
 import Button from "./components/bulma/button";
@@ -13,20 +11,67 @@ import Footer from "./components/footer";
 
 import { logout } from "../actions/auth";
 import { refetchTasks, deleteTask } from "../actions/tasks";
-import { AnyAction } from "../typings/actions";
 import { Task } from "../typings/tasks";
 import { Store } from "../typings/store";
+import { Dispatch, RCPWithDispProps } from "../typings/react";
 
 import { uiDelay } from "../const";
+import { hotkeyHandler, escCode } from "./helpers/keyboard";
 import strings from "./assets/locales";
+
+const generateHotkeyHandler = (view: MainView) => (e: KeyboardEvent) => {
+    const search = document.getElementById("searchInput") as HTMLElement;
+    const searchFocused = document.activeElement === search;
+    const map = [
+        {
+            match: () => (e.ctrlKey || e.metaKey) && e.key === "f",
+            action: () => {
+                e.preventDefault();
+                search.focus();
+            },
+        },
+        {
+            match: () => e.key === "n" && !searchFocused,
+            action: () => {
+                e.preventDefault();
+                view.toNewTask();
+            },
+        },
+        {
+            match: () => e.key === "u" && !searchFocused,
+            action: () => {
+                e.preventDefault();
+                view.refetch();
+            },
+        },
+        {
+            match: () => e.keyCode === escCode && searchFocused,
+            action: () => {
+                e.preventDefault();
+                const ae = document.activeElement as HTMLInputElement;
+                ae.blur();
+                ae.value = "";
+                view.setState({
+                    search: "",
+                });
+            },
+        },
+    ];
+    hotkeyHandler(map);
+};
 
 const mapStateToProps = (state: Store) => ({
     tasks: state.task.tasks,
     username: state.auth.username,
 });
 
-interface Props extends RouteComponentProps {
-    dispatch: ThunkDispatch<any, any, AnyAction>;
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    logout: () => dispatch(logout()),
+    refetch: (tasks: Task[]) => dispatch(refetchTasks(tasks)),
+    delete: (task: Task) => dispatch(deleteTask(task)),
+});
+
+interface Props extends RCPWithDispProps<typeof mapDispatchToProps> {
     tasks: Task[];
     username?: string;
 }
@@ -39,29 +84,13 @@ class MainView extends React.Component<Props, State> {
         tasks: this.props.tasks,
         search: "",
     };
-    logout = () => this.props.dispatch(logout());
-    refetch = () => this.props.dispatch(refetchTasks(this.props.tasks));
-    prune = () => {
-        const danglingTasks = this.state.tasks.filter(
-            (task) =>
-                this.state.tasks.filter((child) => child.PID === task.ID)
-                    .length === 0 && task.Completed
-        );
-        danglingTasks.forEach((task) => this.props.dispatch(deleteTask(task)));
-        // more tasks possibly left to go?
-        danglingTasks.length > 0 && setTimeout(() => this.prune(), uiDelay);
-    };
-    updateSearch = (e: React.FormEvent<HTMLInputElement>) =>
-        this.setState({
-            search: e.currentTarget.value,
-        });
-    toNewTask = () => this.props.history.push("/task/new");
+    hotkeyHandler = generateHotkeyHandler(this);
     componentDidMount = () => {
+        document.addEventListener("keydown", this.hotkeyHandler);
         this.refetch();
-        document.addEventListener("keydown", this.handleHotkeys);
     };
     componentWillUnmount = () => {
-        document.removeEventListener("keydown", this.handleHotkeys);
+        document.removeEventListener("keydown", this.hotkeyHandler);
     };
     componentDidUpdate = (prevProps: Props) => {
         if (prevProps.tasks !== this.props.tasks) {
@@ -70,27 +99,23 @@ class MainView extends React.Component<Props, State> {
             });
         }
     };
-    handleHotkeys = (e: KeyboardEvent) => {
-        const escCode = 27;
-        const search = document.getElementById("searchInput");
-        const searchFocused = document.activeElement === search;
-        if ((e.ctrlKey || e.metaKey) && e.key === "f") {
-            e.preventDefault();
-            (search as HTMLElement).focus();
-        } else if (e.key === "n" && !searchFocused) {
-            e.preventDefault();
-            this.toNewTask();
-        } else if (e.key === "u" && !searchFocused) {
-            e.preventDefault();
-            this.refetch();
-        } else if (e.keyCode === escCode && searchFocused) {
-            (document.activeElement as HTMLElement).blur();
-            e.preventDefault();
-            this.setState({
-                search: "",
-            });
-        }
+    toNewTask = () => this.props.history.push("/task/new");
+    logout = () => this.props.logout();
+    refetch = () => this.props.refetch(this.props.tasks);
+    prune = () => {
+        const danglingTasks = this.state.tasks.filter(
+            (task) =>
+                this.state.tasks.filter((child) => child.PID === task.ID)
+                    .length === 0 && task.Completed
+        );
+        danglingTasks.forEach((task) => this.props.delete(task));
+        // more tasks possibly left to go?
+        danglingTasks.length > 0 && setTimeout(() => this.prune(), uiDelay);
     };
+    updateSearch = (e: React.FormEvent<HTMLInputElement>) =>
+        this.setState({
+            search: e.currentTarget.value,
+        });
     render = () => {
         const { username } = this.props;
         const { tasks, search } = this.state;
@@ -149,4 +174,4 @@ class MainView extends React.Component<Props, State> {
     };
 }
 
-export default connect(mapStateToProps)(MainView);
+export default connect(mapStateToProps, mapDispatchToProps)(MainView);

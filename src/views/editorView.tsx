@@ -1,6 +1,5 @@
 import React from "react";
-import { ThunkDispatch } from "redux-thunk";
-import { match as Match, RouteComponentProps } from "react-router";
+import { match as Match } from "react-router";
 import { connect } from "react-redux";
 
 import Container from "./components/bulma/container";
@@ -11,22 +10,70 @@ import Level from "./components/bulma/level";
 import TaskSelect from "./components/taskSelect";
 
 import { deleteTask, updateTask, createTask } from "../actions/tasks";
-import { TaskAction } from "../typings/actions";
+import { hotkeyHandler, escCode, Hotkey } from "./helpers/keyboard";
 import { Task } from "../typings/tasks";
 import { Store } from "../typings/store";
+import { Dispatch, RCPWithDispProps } from "../typings/react";
 
 import strings from "./assets/locales";
+
+const generateHotkeyHandler = (view: EditorView) => (e: KeyboardEvent) => {
+    const textInput = document.getElementById("taskTextInput") as HTMLElement;
+    const parentSelect = document.getElementById("taskParentSelect");
+    const statusBtn = document.getElementById("taskStatusButton");
+    const editFocused =
+        document.activeElement === textInput ||
+        document.activeElement === parentSelect ||
+        document.activeElement === statusBtn;
+    const map: Hotkey[] = [
+        {
+            match: () => e.key === "b" && !editFocused,
+            action: () => {
+                e.preventDefault();
+                view.props.history.push("/");
+            },
+        },
+        {
+            match: () => e.key === "s" && !editFocused,
+            action: () => {
+                e.preventDefault();
+                view.saveChanges();
+            },
+        },
+        {
+            match: () => e.key === "d" && !editFocused && !view.state.newTask,
+            action: () => {
+                e.preventDefault();
+                view.delete();
+            },
+        },
+        {
+            match: () =>
+                e.keyCode === escCode && document.activeElement === textInput,
+            action: () => {
+                e.preventDefault();
+                textInput.blur();
+            },
+        },
+    ];
+    hotkeyHandler(map);
+};
 
 const mapStateToProps = (state: Store) => ({
     tasks: state.task.tasks,
 });
 
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    create: (task: Task) => dispatch(createTask(task)),
+    update: (task: Task) => dispatch(updateTask(task)),
+    delete: (task: Task) => dispatch(deleteTask(task)),
+});
+
 /** Used to delay navigation before we are finished with stuff. */
 const waitTimeout = 200;
 
-interface Props extends RouteComponentProps {
+interface Props extends RCPWithDispProps<typeof mapDispatchToProps> {
     tasks: Task[];
-    dispatch: ThunkDispatch<any, any, TaskAction>;
     match: Match<{ id: string }>;
 }
 interface State {
@@ -45,7 +92,9 @@ class EditorView extends React.Component<Props, State> {
         newTask: false,
         title: "",
     };
+    hotkeyHandler = generateHotkeyHandler(this);
     componentDidMount = () => {
+        document.addEventListener("keydown", this.hotkeyHandler);
         // editing or creating a new task?
         if (this.props.match.params.id !== "new") {
             const id = parseInt(this.props.match.params.id);
@@ -72,39 +121,12 @@ class EditorView extends React.Component<Props, State> {
                 title: strings.editor_newTaskTitle,
             });
         }
-        document.addEventListener("keydown", this.handleHotkeys);
     };
     componentWillUnmount = () => {
-        document.removeEventListener("keydown", this.handleHotkeys);
-    };
-    handleHotkeys = (e: KeyboardEvent) => {
-        const escCode = 27;
-        const textInput = document.getElementById("taskTextInput");
-        const parentSelect = document.getElementById("taskParentSelect");
-        const statusBtn = document.getElementById("taskStatusButton");
-        const editFocused =
-            document.activeElement === textInput ||
-            document.activeElement === parentSelect ||
-            document.activeElement === statusBtn;
-        if (e.key === "b" && !editFocused) {
-            e.preventDefault();
-            this.props.history.push("/");
-        } else if (e.key === "s" && !editFocused) {
-            e.preventDefault();
-            this.saveChanges();
-        } else if (e.key === "d" && !editFocused && !this.state.newTask) {
-            e.preventDefault();
-            this.delete();
-        } else if (
-            e.keyCode === escCode &&
-            document.activeElement === textInput
-        ) {
-            e.preventDefault();
-            (textInput as HTMLElement).blur();
-        }
+        document.removeEventListener("keydown", this.hotkeyHandler);
     };
     delete = () => {
-        this.props.dispatch(deleteTask(this.state.task));
+        this.props.delete(this.state.task);
         setTimeout(() => {
             this.props.history.goBack();
         }, waitTimeout);
@@ -127,9 +149,9 @@ class EditorView extends React.Component<Props, State> {
     };
     saveChanges = () => {
         if (this.state.newTask) {
-            this.props.dispatch(createTask(this.state.task));
+            this.props.create(this.state.task);
         } else {
-            this.props.dispatch(updateTask(this.state.task));
+            this.props.update(this.state.task);
         }
         // delay the reload so fetching tasks doesn't proceed before we have
         // pushed stuff to the server
@@ -221,4 +243,4 @@ class EditorView extends React.Component<Props, State> {
     };
 }
 
-export default connect(mapStateToProps)(EditorView);
+export default connect(mapStateToProps, mapDispatchToProps)(EditorView);
