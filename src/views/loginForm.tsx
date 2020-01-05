@@ -1,7 +1,5 @@
 import React from "react";
-import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
-import { RouteComponentProps } from "react-router-dom";
 
 import Container from "./components/bulma/container";
 import Button from "./components/bulma/button";
@@ -13,13 +11,17 @@ import Message from "./components/message";
 
 import { login } from "../actions/auth";
 import { getServerVersion } from "../actions/misc";
-import { AuthAction } from "../typings/actions";
+import { Dispatch, RCPWithDispProps } from "../typings/react";
 import { Store } from "../typings/store";
 
 import strings from "./assets/locales";
 
 const mapStateToProps = (state: Store) => ({
     loginFailed: state.auth.loginFailed,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    login: (user: string, pass: string) => dispatch(login(user, pass)),
 });
 
 // applies to the state as well
@@ -29,9 +31,8 @@ interface State {
     loginFailed: boolean;
     signupEnabled: boolean;
 }
-interface Props extends RouteComponentProps {
+interface Props extends RCPWithDispProps<typeof mapDispatchToProps> {
     loginFailed?: boolean;
-    dispatch: ThunkDispatch<any, any, AuthAction>;
 }
 class LoginForm extends React.PureComponent<Props, State> {
     state = {
@@ -53,8 +54,7 @@ class LoginForm extends React.PureComponent<Props, State> {
         this.setState({ username: event.currentTarget.value });
     updatePassword = (event: React.FormEvent<HTMLInputElement>) =>
         this.setState({ password: event.currentTarget.value });
-    login = () =>
-        this.props.dispatch(login(this.state.username, this.state.password));
+    login = () => this.props.login(this.state.username, this.state.password);
     toSignup = () => this.props.history.push("/signup");
     onKeyPress = (event: React.KeyboardEvent<HTMLElement>) => {
         event.key === "Enter" && this.login();
@@ -96,4 +96,4 @@ class LoginForm extends React.PureComponent<Props, State> {
     );
 }
 
-export default connect(mapStateToProps)(LoginForm);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

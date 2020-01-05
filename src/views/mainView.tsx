@@ -1,7 +1,5 @@
 import React from "react";
-import { ThunkDispatch } from "redux-thunk";
 import { connect } from "react-redux";
-import { RouteComponentProps } from "react-router-dom";
 
 import Container from "./components/bulma/container";
 import Button from "./components/bulma/button";
@@ -13,9 +11,9 @@ import Footer from "./components/footer";
 
 import { logout } from "../actions/auth";
 import { refetchTasks, deleteTask } from "../actions/tasks";
-import { AnyAction } from "../typings/actions";
 import { Task } from "../typings/tasks";
 import { Store } from "../typings/store";
+import { Dispatch, RCPWithDispProps } from "../typings/react";
 
 import { uiDelay } from "../const";
 import { hotkeyHandler, escCode } from "./helpers/keyboard";
@@ -67,8 +65,13 @@ const mapStateToProps = (state: Store) => ({
     username: state.auth.username,
 });
 
-interface Props extends RouteComponentProps {
-    dispatch: ThunkDispatch<any, any, AnyAction>;
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+    logout: () => dispatch(logout()),
+    refetch: (tasks: Task[]) => dispatch(refetchTasks(tasks)),
+    delete: (task: Task) => dispatch(deleteTask(task)),
+});
+
+interface Props extends RCPWithDispProps<typeof mapDispatchToProps> {
     tasks: Task[];
     username?: string;
 }
@@ -83,8 +86,8 @@ class MainView extends React.Component<Props, State> {
     };
     hotkeyHandler = generateHotkeyHandler(this);
     componentDidMount = () => {
-        this.refetch();
         document.addEventListener("keydown", this.hotkeyHandler);
+        this.refetch();
     };
     componentWillUnmount = () => {
         document.removeEventListener("keydown", this.hotkeyHandler);
@@ -97,15 +100,15 @@ class MainView extends React.Component<Props, State> {
         }
     };
     toNewTask = () => this.props.history.push("/task/new");
-    logout = () => this.props.dispatch(logout());
-    refetch = () => this.props.dispatch(refetchTasks(this.props.tasks));
+    logout = () => this.props.logout();
+    refetch = () => this.props.refetch(this.props.tasks);
     prune = () => {
         const danglingTasks = this.state.tasks.filter(
             (task) =>
                 this.state.tasks.filter((child) => child.PID === task.ID)
                     .length === 0 && task.Completed
         );
-        danglingTasks.forEach((task) => this.props.dispatch(deleteTask(task)));
+        danglingTasks.forEach((task) => this.props.delete(task));
         // more tasks possibly left to go?
         danglingTasks.length > 0 && setTimeout(() => this.prune(), uiDelay);
     };
@@ -171,4 +174,4 @@ class MainView extends React.Component<Props, State> {
     };
 }
 
-export default connect(mapStateToProps)(MainView);
+export default connect(mapStateToProps, mapDispatchToProps)(MainView);
