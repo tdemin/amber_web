@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 import LocalizedStrings from "react-localization";
 
 import { appVersion, appFullName, appAuthor, amberFullName } from "../../const";
@@ -35,6 +37,11 @@ export default new LocalizedStrings({
         task_toggleBtnCompleted: "Completed",
         task_toggleBtnPending: "Pending",
         app_versionString: `${appFullName} v${appVersion} by ${appAuthor}`,
-        amber_versionString: `${amberFullName} v`,
+        app_fullVersionString: (version: string) =>
+            `${appFullName} v${appVersion} by ${appAuthor}, running on top of ${amberFullName} v${version}`,
+        about_licenseInfo: "This app is free software, licensed MIT.",
+        about_amberWebHomePage: "Get Amber Web source code.",
+        about_amberHomePage: "Get Amber source code.",
+        about_linksParagraph: "Links:",
     },
 });

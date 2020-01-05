@@ -31,3 +31,9 @@ export interface BulmaFieldProps {
     /** `<div className="control">` */
     control?: React.ReactNode;
 }
+
+/** List of properties used by the `<section>` component in Bulma. */
+export interface BulmaSectionProps {
+    isMedium?: boolean;
+    isLarge?: boolean;
+}

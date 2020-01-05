@@ -12,6 +12,7 @@ import LoginForm from "./views/loginForm";
 import SignupForm from "./views/signupForm";
 import MainView from "./views/mainView";
 import EditorView from "./views/editorView";
+import AboutView from "./views/aboutView";
 
 import { setToken, resetToken, localLogout } from "./actions/auth";
 
@@ -56,27 +57,30 @@ class App extends React.Component<Props, Props> {
         }
     };
     componentDidMount = () => {
-        req.head("/session").then((res) => {
-            if (res.status !== HTTPSuccessCode) {
-                this.props.logout();
-            }
-        });
+        if (this.props.token) {
+            req.head("/session").then((res) => {
+                if (res.status !== HTTPSuccessCode) {
+                    this.props.logout();
+                }
+            });
+        }
     };
     render = () => {
-        const token = this.state.token as string;
-        const loggedIn = token.length !== 0;
+        const loggedIn = (this.state.token as string).length !== 0;
         return (
             <Router>
                 {!loggedIn && (
                     <Switch>
                         <Route path="/signup" exact component={SignupForm} />
                         <Route path="/" exact component={LoginForm} />
+                        <Route path="/about" exact component={AboutView} />
                     </Switch>
                 )}
                 {loggedIn && (
                     <Switch>
                         <Route path="/" exact component={MainView} />
                         <Route path="/task/:id" exact component={EditorView} />
+                        <Route path="/about" exact component={AboutView} />
                     </Switch>
                 )}
             </Router>
