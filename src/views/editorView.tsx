@@ -242,6 +242,7 @@ class EditorView extends React.Component<Props, State> {
                                 control={
                                     <TaskSelect
                                         id="taskParentSelect"
+                                        tasks={this.props.tasks}
                                         current={task}
                                         initialValue={task.PID}
                                         onChange={this.updateParent}
