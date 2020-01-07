@@ -120,6 +120,17 @@ div.taskList {
     div.taskSubtree {
         margin-left: $spacing * 8;
         div.taskLine {
+            // a hackish way to hide dates for tasks that do not have them set
+            .taskDeadline,
+            .taskReminder {
+                display: none;
+            }
+            &.taskHasDeadline .taskDeadline {
+                display: unset !important;
+            }
+            &.taskHasReminder .taskReminder {
+                display: unset !important;
+            }
             border: 1px solid $borderColor;
             border-radius: 3px;
             margin: $spacing * 3 0;

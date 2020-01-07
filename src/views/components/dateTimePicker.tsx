@@ -46,6 +46,7 @@ export class DateTimePicker extends React.Component<Props, State> {
         }
         return "";
     };
+    // TODO: add an "Unset" button
     render = () => (
         <div>
             <input
