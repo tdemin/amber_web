@@ -1,7 +1,7 @@
 export const baseURI: string =
     process.env.REACT_APP_APIURI || "https://amber.h.tdem.in/api/v0";
 
-export const appVersion: string = "0.0.8";
+export const appVersion: string = "0.1.0";
 export const appFullName: string = "Amber Web";
 export const appName: string = "amber_web";
 export const appAuthor: string = "Timur Demin";
