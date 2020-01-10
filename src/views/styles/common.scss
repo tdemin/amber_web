@@ -67,11 +67,6 @@ div.searchBox {
     }
 }
 
-.footer_links {
-    display: flex;
-    flex-direction: column;
-}
-
 @media (max-width: $small) {
     div.headerText {
         display: none;
@@ -121,13 +116,14 @@ div.taskList {
         margin-left: $spacing * 8;
         div.taskLine {
             // a hackish way to hide dates for tasks that do not have them set
+            .taskDates,
             .taskDeadline,
             .taskReminder {
                 display: none;
             }
-            &.taskHasDeadline .taskDeadline {
-                display: unset !important;
-            }
+            &.taskHasDeadline .taskDates,
+            &.taskHasReminder .taskDates,
+            &.taskHasDeadline .taskDeadline,
             &.taskHasReminder .taskReminder {
                 display: unset !important;
             }
@@ -144,13 +140,12 @@ div.taskList {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            div.taskText {
+            div.taskData {
                 flex-grow: 4;
+                flex-direction: column;
+                align-items: flex-start;
                 // solves the problem with fitting text into the containers
                 width: min-content;
-                a {
-                    flex: 1;
-                }
             }
         }
     }
