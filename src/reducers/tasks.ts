@@ -2,8 +2,22 @@ import Actions from "../actions/list";
 import { TaskAction } from "../typings/actions";
 import { Task } from "../typings/tasks";
 
-/** Sorts a task array in ascending order. Returns a new sorted array. */
-const sort = (tasks: Task[]) => [...tasks.sort((a, b) => a.ID - b.ID)];
+/** Sorts a task array in ascending order by:
+ * 1. Reminder date.
+ * 2. Deadline date.
+ * 3. ID.
+ * Returns a new sorted array. */
+const sort = (tasks: Task[]) => [
+    ...tasks.sort((a, b) => {
+        if (a.Reminder !== b.Reminder) {
+            return b.Reminder - a.Reminder;
+        }
+        if (a.Deadline !== b.Deadline) {
+            return b.Deadline - a.Deadline;
+        }
+        return a.ID - b.ID;
+    }),
+];
 
 export interface TaskState {
     tasks: Task[];
