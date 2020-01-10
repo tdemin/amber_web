@@ -8,6 +8,7 @@ import Input from "./components/bulma/input";
 import Field from "./components/bulma/field";
 import Level from "./components/bulma/level";
 import TaskSelect from "./components/taskSelect";
+import DateTimePicker from "./components/dateTimePicker";
 
 import { deleteTask, updateTask, createTask } from "../actions/tasks";
 import { hotkeyHandler, escCode, Hotkey } from "./helpers/keyboard";
@@ -88,6 +89,8 @@ class EditorView extends React.Component<Props, State> {
             Text: "",
             ID: 0,
             PID: 0,
+            Deadline: 0,
+            Reminder: 0,
         } as Task,
         newTask: false,
         title: "",
@@ -134,18 +137,28 @@ class EditorView extends React.Component<Props, State> {
     updateText = (e: React.FormEvent<HTMLInputElement>) => {
         const { task } = this.state;
         task.Text = e.currentTarget.value;
-        this.setState(() => ({ task }));
+        this.setState({ task });
     };
     updateStatus = () => {
         const { task } = this.state;
         task.Completed = !task.Completed;
-        this.setState(() => ({ task }));
+        this.setState({ task });
     };
     updateParent = (e: React.FormEvent<HTMLSelectElement>) => {
         const newPID = parseInt(e.currentTarget.value);
         const { task } = this.state;
         task.PID = newPID;
-        this.setState(() => ({ task }));
+        this.setState({ task });
+    };
+    updateDeadline = (date: number) => {
+        const { task } = this.state;
+        task.Deadline = date;
+        this.setState({ task });
+    };
+    updateReminder = (date: number) => {
+        const { task } = this.state;
+        task.Reminder = date;
+        this.setState({ task });
     };
     saveChanges = () => {
         if (this.state.newTask) {
@@ -229,9 +242,28 @@ class EditorView extends React.Component<Props, State> {
                                 control={
                                     <TaskSelect
                                         id="taskParentSelect"
+                                        tasks={this.props.tasks}
                                         current={task}
                                         initialValue={task.PID}
                                         onChange={this.updateParent}
+                                    />
+                                }
+                            />
+                            <Field
+                                label={strings.editor_deadline}
+                                control={
+                                    <DateTimePicker
+                                        initialValue={task.Deadline}
+                                        onChange={this.updateDeadline}
+                                    />
+                                }
+                            />
+                            <Field
+                                label={strings.editor_reminder}
+                                control={
+                                    <DateTimePicker
+                                        initialValue={task.Reminder}
+                                        onChange={this.updateReminder}
                                     />
                                 }
                             />

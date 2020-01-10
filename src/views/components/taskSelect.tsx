@@ -1,14 +1,8 @@
 import React, { HTMLAttributes } from "react";
-import { connect } from "react-redux";
 
-import { Store } from "../../typings/store";
 import { Task } from "../../typings/tasks";
 
 import strings from "../assets/locales";
-
-const mapStateToProps = (state: Store) => ({
-    tasks: state.task.tasks,
-});
 
 interface Props extends HTMLAttributes<HTMLSelectElement> {
     tasks: Task[];
@@ -38,4 +32,4 @@ const TaskSelect: React.FC<Props> = (props) => (
     </div>
 );
 
-export default connect(mapStateToProps)(TaskSelect);
+export default TaskSelect;

@@ -4,9 +4,7 @@ export interface TaskRecord {
     text?: string;
     status: number;
     last_mod?: number;
-    /** TODO: Not implemented yet. */
     deadline?: number;
-    /** TODO: Not implemented yet. */
     reminder?: number;
 }
 
@@ -16,6 +14,8 @@ export class Task {
     Text: string;
     Completed: boolean;
     LastMod: number;
+    Deadline: number;
+    Reminder: number;
     /** Informational field for tasks that have been created offline, those are
      * to be pushed to the server at the next sync. */
     ToSync: boolean;
@@ -31,5 +31,7 @@ export class Task {
         this.LastMod = Date.now();
         this.ToSync = false;
         this.ToRemove = false;
+        this.Deadline = 0;
+        this.Reminder = 0;
     }
 }

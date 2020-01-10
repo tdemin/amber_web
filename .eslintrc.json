@@ -110,7 +110,7 @@
                 "ignoreEnums": true,
                 "enforceConst": true,
                 "ignoreReadonlyClassProperties": true,
-                "ignore": [0, 1, 2]
+                "ignore": [0, 1, 2, 1000]
             }
         ],
         "@typescript-eslint/brace-style": ["error", "1tbs"],
