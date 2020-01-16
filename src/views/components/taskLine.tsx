@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter, RouteComponentProps as RCP } from "react-router";
-import format from "date-fns/format";
 
 import Level from "../components/bulma/level";
 import Button from "../components/bulma/button";
@@ -10,6 +9,7 @@ import { Task } from "../../typings/tasks";
 import { Dispatch } from "../../typings/react";
 
 import { updateTask } from "../../actions/tasks";
+import { fmtDate } from "../../helpers/datetime";
 
 import strings from "../assets/locales";
 
@@ -40,9 +40,6 @@ class TaskLine extends React.Component<Props, State> {
         task.Completed = !task.Completed;
         this.props.update(task);
     };
-    // Pp expands to a localized date string that looks like this:
-    // "05/29/1453, 12:00 AM"
-    fmtDate = (date: number) => format(new Date(date), "Pp");
     gotoEditor = () => this.props.history.push(`/task/${this.state.task.ID}`);
     render = () => {
         const {
@@ -75,12 +72,12 @@ class TaskLine extends React.Component<Props, State> {
                     </Level>
                     <Level levelItem className="taskDates">
                         <span className="taskDeadline">
-                            {`(D: ${this.fmtDate(Deadline)})`}
+                            {`(D: ${fmtDate(Deadline)})`}
                             {/* eslint-disable react/jsx-no-literals */}
                             &nbsp;
                         </span>
                         <span className="taskReminder">
-                            {`(R: ${this.fmtDate(Reminder)})`}
+                            {`(R: ${fmtDate(Reminder)})`}
                         </span>
                     </Level>
                 </Level>
