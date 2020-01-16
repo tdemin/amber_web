@@ -7,6 +7,7 @@ import {
     DateFormat,
     TimeFormat,
 } from "../../helpers/datetime";
+import strings from "../assets/locales";
 
 /** Helper for `new Date()`. */
 const FDate = (v: number | undefined) => new Date(v || 0);
@@ -46,9 +47,10 @@ export class DateTimePicker extends React.Component<Props, State> {
         const date = parse(e.currentTarget.value, TimeFormat, this.state.date);
         this.setState({ date });
     };
-    // TODO: add an "Unset" button
+    unsetDate = () => this.setState({ date: FDate(0) });
     render = () => {
         let date, time;
+        // date/time input sometimes reports weird values that are out of range
         try {
             date = format(this.state.date, DateFormat);
             time = format(this.state.date, TimeFormat);
@@ -69,6 +71,11 @@ export class DateTimePicker extends React.Component<Props, State> {
                     onChange={this.updateTime}
                     value={time}
                     required={this.props.timeRequired}
+                />
+                <input
+                    type="button"
+                    value={strings.editor_unsetTp}
+                    onClick={this.unsetDate}
                 />
             </div>
         );
