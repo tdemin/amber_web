@@ -7,7 +7,8 @@ import { AuthAction } from "../typings/actions";
 import { serializeAuthData } from "../helpers/api";
 import { SuccessAction, FailAction } from "../typings/api";
 
-const tokenHeader = "X-Auth-Token";
+const tokenHeader = "Authorization";
+const tokenPrefix = "Bearer";
 
 /**
  * Redux action creator. Performs an HTTP request, if it succeeds, copies
@@ -78,7 +79,7 @@ export const signup = (
  * @param token Auth token in plain text.
  */
 export const setToken = (token: string) => {
-    req.defaults.headers.common[tokenHeader] = token;
+    req.defaults.headers.common[tokenHeader] = `${tokenPrefix} ${token}`;
 };
 
 /**

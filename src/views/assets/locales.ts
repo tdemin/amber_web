@@ -36,6 +36,7 @@ export default new LocalizedStrings({
         editor_parentNoParentVal: "No parent",
         editor_deadline: "Deadline:",
         editor_reminder: "Reminder:",
+        editor_unsetTp: "Unset",
         task_toggleBtnCompleted: "Completed",
         task_toggleBtnPending: "Pending",
         app_versionString: `${appFullName} v${appVersion} by ${appAuthor}`,

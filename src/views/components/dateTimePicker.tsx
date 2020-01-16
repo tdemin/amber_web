@@ -7,6 +7,10 @@ import {
     DateFormat,
     TimeFormat,
 } from "../../helpers/datetime";
+import strings from "../assets/locales";
+
+/** Helper for `new Date()`. */
+const FDate = (v: number | undefined) => new Date(v || 0);
 
 interface Props {
     dateRequired?: boolean;
@@ -19,13 +23,16 @@ interface State {
 }
 export class DateTimePicker extends React.Component<Props, State> {
     state = {
-        date: new Date(this.props.initialValue || 0),
+        date: FDate(this.props.initialValue),
     };
-    componentDidUpdate = (_p: Props, prevState: State) => {
+    componentDidUpdate = (prevProps: Props, prevState: State) => {
         if (this.props.onChange) {
             if (prevState.date !== this.state.date) {
                 this.props.onChange(dateTimeToUnixTime(this.state.date));
             }
+        }
+        if (this.props.initialValue !== prevProps.initialValue) {
+            this.setState({ date: FDate(this.props.initialValue) });
         }
     };
     updateDate = (e: React.FormEvent<HTMLInputElement>) => {
@@ -40,29 +47,39 @@ export class DateTimePicker extends React.Component<Props, State> {
         const date = parse(e.currentTarget.value, TimeFormat, this.state.date);
         this.setState({ date });
     };
-    inputInitValue = (date: Date, fmt: string): string => {
-        if (date.getTime()) {
-            return format(date, fmt);
+    unsetDate = () => this.setState({ date: FDate(0) });
+    render = () => {
+        let date, time;
+        // date/time input sometimes reports weird values that are out of range
+        try {
+            date = format(this.state.date, DateFormat);
+            time = format(this.state.date, TimeFormat);
+        } catch {
+            date = "";
+            time = "";
         }
-        return "";
+        return (
+            <div>
+                <input
+                    type="date"
+                    onChange={this.updateDate}
+                    value={date}
+                    required={this.props.dateRequired}
+                />
+                <input
+                    type="time"
+                    onChange={this.updateTime}
+                    value={time}
+                    required={this.props.timeRequired}
+                />
+                <input
+                    type="button"
+                    value={strings.editor_unsetTp}
+                    onClick={this.unsetDate}
+                />
+            </div>
+        );
     };
-    // TODO: add an "Unset" button
-    render = () => (
-        <div>
-            <input
-                type="date"
-                onChange={this.updateDate}
-                value={this.inputInitValue(this.state.date, DateFormat)}
-                required={this.props.dateRequired}
-            />
-            <input
-                type="time"
-                onChange={this.updateTime}
-                value={this.inputInitValue(this.state.date, TimeFormat)}
-                required={this.props.timeRequired}
-            />
-        </div>
-    );
 }
 
 export default DateTimePicker;
