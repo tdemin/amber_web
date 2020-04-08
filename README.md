@@ -14,7 +14,7 @@ Simply run:
 
 Set the `REACT_APP_APIURI` environment variable in case you're testing against
 a local server. It should point to the base URI for all API requests, namely
-`https://amber.h.tdem.in/api`.
+`https://amber.h.tdem.in/api/v0`.
 
 ###### Docker
 
